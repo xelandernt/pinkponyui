@@ -1,9 +1,11 @@
 ---
+import { INSTAGRAM_URL } from '../consts';
+
 interface Props {
 	instagramUrl?: string;
 }
 
-const { instagramUrl = "https://instagram.com/pinkponyrunclub" } = Astro.props;
+const { instagramUrl = INSTAGRAM_URL } = Astro.props;
 ---
 
 <footer class="footer">

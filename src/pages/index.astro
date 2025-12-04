@@ -7,6 +7,14 @@ import { getCollection } from 'astro:content';
 // Get all events from content collection and sort by order
 const allEvents = await getCollection('events');
 const sortedEvents = allEvents.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Render all events
+const renderedEvents = await Promise.all(
+	sortedEvents.map(async (event) => ({
+		...event,
+		Content: (await event.render()).Content
+	}))
+);
 ---
 
 <!doctype html>
@@ -34,8 +42,8 @@ const sortedEvents = allEvents.sort((a, b) => (a.data.order ?? 0) - (b.data.orde
 		<section class="events-section">
 			<h2 class="section-title">Upcoming Events</h2>
 			<div class="events-container">
-				{sortedEvents.map(async (event) => {
-					const { Content } = await event.render();
+				{renderedEvents.map((event) => {
+					const { Content } = event;
 					return (
 						<Event 
 							title={event.data.title}
@@ -49,7 +57,7 @@ const sortedEvents = allEvents.sort((a, b) => (a.data.order ?? 0) - (b.data.orde
 			</div>
 		</section>
 
-		<Footer instagramUrl="https://instagram.com/pinkponyrunclub" />
+		<Footer />
 
 		<style>
 			* {
