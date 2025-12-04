@@ -52,4 +52,28 @@ const { title, when, where } = Astro.props;
 		line-height: 1.6;
 		font-size: 1rem;
 	}
+
+	.event-description :global(strong) {
+		color: #ff69b4;
+		font-weight: 600;
+	}
+
+	.event-description :global(em) {
+		color: #da70d6;
+		font-style: italic;
+	}
+
+	.event-description :global(a) {
+		color: #ff69b4;
+		text-decoration: underline;
+		transition: color 0.2s ease;
+	}
+
+	.event-description :global(a:hover) {
+		color: #ff1493;
+	}
+
+	.event-description :global(p) {
+		margin: 0;
+	}
 </style>

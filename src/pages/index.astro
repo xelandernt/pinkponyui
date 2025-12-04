@@ -251,15 +251,25 @@ const renderedEvents = await Promise.all(
 				const eventsContainer = document.querySelector('.events-container');
 				
 				if (eventsContainer) {
+					let hoveredCard = null;
+					
 					eventCards.forEach((card) => {
 						card.addEventListener('mouseenter', () => {
+							hoveredCard = card;
 							eventsContainer.classList.add('has-hovered-card');
 							card.classList.add('is-hovered');
 						});
 						
 						card.addEventListener('mouseleave', () => {
-							eventsContainer.classList.remove('has-hovered-card');
 							card.classList.remove('is-hovered');
+							hoveredCard = null;
+							
+							// Only remove container class if no card is currently hovered
+							setTimeout(() => {
+								if (hoveredCard === null) {
+									eventsContainer.classList.remove('has-hovered-card');
+								}
+							}, 10);
 						});
 					});
 				}
