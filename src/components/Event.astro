@@ -1,0 +1,79 @@
+---
+interface Props {
+	title: string;
+	when: string;
+	where: string;
+}
+
+const { title, when, where } = Astro.props;
+---
+
+<article class="event-card">
+	<h3 class="event-title">{title}</h3>
+	<div class="event-meta">
+		<p class="event-when">📅 {when}</p>
+		<p class="event-where">📍 {where}</p>
+	</div>
+	<div class="event-description">
+		<slot />
+	</div>
+</article>
+
+<style>
+	.event-card {
+		background: linear-gradient(135deg, #2d1b2d 0%, #1a0a1a 100%);
+		border: 2px solid #ff1493;
+		border-radius: 15px;
+		padding: 2rem;
+		transition: all 0.3s ease;
+		position: relative;
+	}
+
+	.event-title {
+		font-family: "Lobster", cursive;
+		font-size: 2rem;
+		color: #ff69b4;
+		margin-bottom: 1rem;
+	}
+
+	.event-meta {
+		margin-bottom: 1rem;
+	}
+
+	.event-when,
+	.event-where {
+		color: #da70d6;
+		font-size: 1rem;
+		margin: 0.5rem 0;
+	}
+
+	.event-description {
+		color: #e6b3e6;
+		line-height: 1.6;
+		font-size: 1rem;
+	}
+
+	.event-description :global(strong) {
+		color: #ff69b4;
+		font-weight: 600;
+	}
+
+	.event-description :global(em) {
+		color: #da70d6;
+		font-style: italic;
+	}
+
+	.event-description :global(a) {
+		color: #ff69b4;
+		text-decoration: underline;
+		transition: color 0.2s ease;
+	}
+
+	.event-description :global(a:hover) {
+		color: #ff1493;
+	}
+
+	.event-description :global(p) {
+		margin: 0;
+	}
+</style>

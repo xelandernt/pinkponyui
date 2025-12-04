@@ -1,27 +1,20 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Event from '../components/Event.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
 
-// Events data - easy to edit and add new events
-const events = [
-	{
-		title: "Saturday Morning Run",
-		when: "Every Saturday, 8:00 AM",
-		where: "Central Park, Main Entrance",
-		description: "Join us for our weekly Saturday morning run! All paces welcome. We typically run 5-10km depending on the group."
-	},
-	{
-		title: "Pink Pony 5K Race",
-		when: "March 15, 2025, 9:00 AM",
-		where: "Riverside Track & Field",
-		description: "Our annual 5K race! Come dressed in your best pink attire. Registration includes a custom Pink Pony Run Club t-shirt and post-race brunch."
-	},
-	{
-		title: "Wednesday Night Social Run",
-		when: "Every Wednesday, 6:30 PM",
-		where: "Downtown Square",
-		description: "A casual evening run followed by drinks and socializing at our favorite local spot. Perfect for meeting new running friends!"
-	}
-];
+// Get all events from content collection and sort by order
+const allEvents = await getCollection('events');
+const sortedEvents = allEvents.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Render all events
+const renderedEvents = await Promise.all(
+	sortedEvents.map(async (event) => ({
+		...event,
+		Content: (await event.render()).Content
+	}))
+);
 ---
 
 <!doctype html>
@@ -49,18 +42,22 @@ const events = [
 		<section class="events-section">
 			<h2 class="section-title">Upcoming Events</h2>
 			<div class="events-container">
-				{events.map((event) => (
-					<article class="event-card">
-						<h3 class="event-title">{event.title}</h3>
-						<div class="event-meta">
-							<p class="event-when">📅 {event.when}</p>
-							<p class="event-where">📍 {event.where}</p>
-						</div>
-						<p class="event-description">{event.description}</p>
-					</article>
-				))}
+				{renderedEvents.map((event) => {
+					const { Content } = event;
+					return (
+						<Event 
+							title={event.data.title}
+							when={event.data.when}
+							where={event.data.where}
+						>
+							<Content />
+						</Event>
+					);
+				})}
 			</div>
 		</section>
+
+		<Footer />
 
 		<style>
 			* {
@@ -157,41 +154,18 @@ const events = [
 				gap: 2rem;
 			}
 
-			.event-card {
-				background: linear-gradient(135deg, #2d1b2d 0%, #1a0a1a 100%);
-				border: 2px solid #ff1493;
-				border-radius: 15px;
-				padding: 2rem;
-				transition: transform 0.3s ease, box-shadow 0.3s ease;
+			/* Hover effect: darken all cards when one is hovered */
+			.events-container.has-hovered-card :global(.event-card) {
+				opacity: 0.4;
+				filter: brightness(0.5);
 			}
 
-			.event-card:hover {
-				transform: translateY(-5px);
-				box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
-			}
-
-			.event-title {
-				font-family: "Lobster", cursive;
-				font-size: 2rem;
-				color: #ff69b4;
-				margin-bottom: 1rem;
-			}
-
-			.event-meta {
-				margin-bottom: 1rem;
-			}
-
-			.event-when,
-			.event-where {
-				color: #da70d6;
-				font-size: 1rem;
-				margin: 0.5rem 0;
-			}
-
-			.event-description {
-				color: #e6b3e6;
-				line-height: 1.6;
-				font-size: 1rem;
+			.events-container.has-hovered-card :global(.event-card.is-hovered) {
+				opacity: 1;
+				filter: brightness(1);
+				transform: translateY(-10px) scale(1.05);
+				box-shadow: 0 15px 40px rgba(255, 20, 147, 0.5);
+				z-index: 10;
 			}
 
 			@media (max-width: 768px) {
@@ -271,6 +245,34 @@ const events = [
 					duration: 0,
 					delay: 0
 				});
+
+				// Add hover effect for event cards
+				const eventCards = document.querySelectorAll('.event-card');
+				const eventsContainer = document.querySelector('.events-container');
+				
+				if (eventsContainer) {
+					let hoveredCard = null;
+					
+					eventCards.forEach((card) => {
+						card.addEventListener('mouseenter', () => {
+							hoveredCard = card;
+							eventsContainer.classList.add('has-hovered-card');
+							card.classList.add('is-hovered');
+						});
+						
+						card.addEventListener('mouseleave', () => {
+							card.classList.remove('is-hovered');
+							hoveredCard = null;
+							
+							// Only remove container class if no card is currently hovered
+							setTimeout(() => {
+								if (hoveredCard === null) {
+									eventsContainer.classList.remove('has-hovered-card');
+								}
+							}, 10);
+						});
+					});
+				}
 			});
 		</script>
 	</body>
