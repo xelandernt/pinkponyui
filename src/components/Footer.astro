@@ -1,0 +1,124 @@
+---
+interface Props {
+	instagramUrl?: string;
+}
+
+const { instagramUrl = "https://instagram.com/pinkponyrunclub" } = Astro.props;
+---
+
+<footer class="footer">
+	<div class="footer-content">
+		<div class="footer-brand">
+			<h3 class="footer-title">Pink Pony Run Club</h3>
+			<p class="footer-tagline">Run Pony Run! 🏃‍♀️💕</p>
+		</div>
+		<div class="footer-social">
+			<a href={instagramUrl} target="_blank" rel="noopener noreferrer" class="social-link" aria-label="Follow us on Instagram">
+				<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+					<rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+					<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+					<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+				</svg>
+				<span>@pinkponyrunclub</span>
+			</a>
+		</div>
+	</div>
+	<div class="footer-bottom">
+		<p>&copy; {new Date().getFullYear()} Pink Pony Run Club. All rights reserved.</p>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		background: linear-gradient(180deg, #2d1b2d 0%, #1a0a1a 100%);
+		border-top: 2px solid #ff1493;
+		padding: 3rem 2rem 1.5rem;
+		color: #e6b3e6;
+	}
+
+	.footer-content {
+		max-width: 1200px;
+		margin: 0 auto;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 2rem;
+		flex-wrap: wrap;
+		margin-bottom: 2rem;
+	}
+
+	.footer-brand {
+		flex: 1;
+	}
+
+	.footer-title {
+		font-family: "Lobster", cursive;
+		font-size: 1.8rem;
+		color: #ff69b4;
+		margin-bottom: 0.5rem;
+	}
+
+	.footer-tagline {
+		color: #da70d6;
+		font-size: 1rem;
+	}
+
+	.footer-social {
+		flex: 0 0 auto;
+	}
+
+	.social-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: #ff69b4;
+		text-decoration: none;
+		font-size: 1.1rem;
+		transition: all 0.3s ease;
+		padding: 0.75rem 1.5rem;
+		border: 2px solid #ff1493;
+		border-radius: 50px;
+		background: linear-gradient(135deg, rgba(255, 20, 147, 0.1) 0%, rgba(255, 105, 180, 0.05) 100%);
+	}
+
+	.social-link:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 5px 20px rgba(255, 20, 147, 0.4);
+		background: linear-gradient(135deg, rgba(255, 20, 147, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
+	}
+
+	.social-link svg {
+		stroke: #ff69b4;
+		transition: transform 0.3s ease;
+	}
+
+	.social-link:hover svg {
+		transform: rotate(10deg) scale(1.1);
+	}
+
+	.footer-bottom {
+		max-width: 1200px;
+		margin: 0 auto;
+		text-align: center;
+		padding-top: 1.5rem;
+		border-top: 1px solid rgba(255, 20, 147, 0.3);
+		font-size: 0.9rem;
+		color: #da70d6;
+	}
+
+	@media (max-width: 768px) {
+		.footer-content {
+			flex-direction: column;
+			text-align: center;
+		}
+
+		.footer-title {
+			font-size: 1.5rem;
+		}
+
+		.social-link {
+			font-size: 1rem;
+			padding: 0.6rem 1.2rem;
+		}
+	}
+</style>
