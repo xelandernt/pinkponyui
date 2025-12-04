@@ -3,4 +3,4 @@
 
 export const SITE_TITLE = 'Pink Pony Run Club';
 export const SITE_DESCRIPTION = 'Run Pony Run!';
-export const INSTAGRAM_URL = 'https://instagram.com/pinkponyrunclub';
+export const INSTAGRAM_URL = 'https://instagram.com/pinkponyrunningclub';
