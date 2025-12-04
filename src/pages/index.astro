@@ -3,6 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Event from '../components/Event.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
+import {SITE_TITLE} from "../consts";
 
 // Get all events from content collection and sort by order
 const allEvents = await getCollection('events');
@@ -20,7 +21,7 @@ const renderedEvents = await Promise.all(
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title="Pink Pony Run Club" description="Join the Pink Pony Run Club for running events and community fun!" />
+		<BaseHead title={SITE_TITLE} description="Join the Pink Pony Running Club for running events and community fun!" />
 	</head>
 	<body>
 		<!-- Hero/Cover Section -->
