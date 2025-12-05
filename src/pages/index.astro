@@ -3,7 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Event from '../components/Event.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
-import {SITE_TITLE} from "../consts";
+import {SITE_TITLE, LETTER_GRAVITY, MOUSE_PUSH_RADIUS} from "../consts";
 
 // Get all events from content collection and sort by order
 const allEvents = await getCollection('events');
@@ -24,41 +24,43 @@ const renderedEvents = await Promise.all(
 		<BaseHead title={SITE_TITLE} description="Join the Pink Pony Running Club for running events and community fun!" />
 	</head>
 	<body>
-		<!-- Hero/Cover Section -->
-		<section class="hero">
-			<div class="title-container">
-				<h1 class="hero-title" id="hero-title">
-					<span class="word">PINK</span>
-					<span class="word">PONY</span>
-					<span class="word">RUN</span>
-					<span class="word">CLUB</span>
-				</h1>
-			</div>
-			<div class="scroll-indicator">
-				<div class="arrow-down"></div>
-			</div>
-		</section>
+		<div class="page-wrapper">
+			<!-- Hero/Cover Section -->
+			<section class="hero">
+				<div class="title-container">
+					<h1 class="hero-title" id="hero-title">
+						<span class="word">PINK</span>
+						<span class="word">PONY</span>
+						<span class="word">RUNNING</span>
+						<span class="word">CLUB</span>
+					</h1>
+				</div>
+				<div class="scroll-indicator">
+					<div class="arrow-down"></div>
+				</div>
+			</section>
 
-		<!-- Events Section -->
-		<section class="events-section">
-			<h2 class="section-title">Upcoming Events</h2>
-			<div class="events-container">
-				{renderedEvents.map((event) => {
-					const { Content } = event;
-					return (
-						<Event 
-							title={event.data.title}
-							when={event.data.when}
-							where={event.data.where}
-						>
-							<Content />
-						</Event>
-					);
-				})}
-			</div>
-		</section>
+			<!-- Events Section -->
+			<section class="events-section">
+				<h2 class="section-title">Upcoming Events</h2>
+				<div class="events-container">
+					{renderedEvents.map((event) => {
+						const { Content } = event;
+						return (
+							<Event 
+								title={event.data.title}
+								when={event.data.when}
+								where={event.data.where}
+							>
+								<Content />
+							</Event>
+						);
+					})}
+				</div>
+			</section>
 
-		<Footer />
+			<Footer />
+		</div>
 
 		<style>
 			* {
@@ -67,11 +69,23 @@ const renderedEvents = await Promise.all(
 				box-sizing: border-box;
 			}
 
+			html {
+				height: 100%;
+				overflow: hidden;
+			}
+
 			body {
 				font-family: "Atkinson", sans-serif;
 				background: #000;
 				color: #fff;
-				overflow-x: hidden;
+				height: 100%;
+				overflow: hidden;
+			}
+
+			.page-wrapper {
+				height: 100%;
+				overflow-y: auto;
+				overflow-x: clip;
 			}
 
 			/* Hero Section */
@@ -87,6 +101,8 @@ const renderedEvents = await Promise.all(
 
 			.title-container {
 				text-align: center;
+				position: relative;
+				z-index: 1;
 			}
 
 			.hero-title {
@@ -102,11 +118,13 @@ const renderedEvents = await Promise.all(
 				display: inline-block;
 				margin: 0 0.2em;
 				opacity: 0;
+				will-change: transform;
 			}
+
 
 			.scroll-indicator {
 				position: absolute;
-				bottom: 2rem;
+				bottom: 10%;
 				left: 50%;
 				transform: translateX(-50%);
 			}
@@ -118,6 +136,8 @@ const renderedEvents = await Promise.all(
 				border-bottom: 3px solid #ff1493;
 				transform: rotate(-45deg);
 				animation: bounce 2s infinite;
+				position: relative;
+				top: 30%;
 			}
 
 			@keyframes bounce {
@@ -134,9 +154,10 @@ const renderedEvents = await Promise.all(
 
 			/* Events Section */
 			.events-section {
-				min-height: 100vh;
 				padding: 4rem 2rem;
-				background: linear-gradient(180deg, #000 0%, #1a0a1a 50%, #2d1b2d 100%);
+				background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(26, 10, 26, 0.85) 50%, rgba(45, 27, 45, 0.85) 100%);
+				position: relative;
+				z-index: 2;
 			}
 
 			.section-title {
@@ -189,13 +210,27 @@ const renderedEvents = await Promise.all(
 			}
 		</style>
 
+		<script is:inline define:vars={{LETTER_GRAVITY, MOUSE_PUSH_RADIUS}}>
+			// Physics constants from consts.ts are now available as variables
+			window.LETTER_GRAVITY = LETTER_GRAVITY;
+			window.MOUSE_PUSH_RADIUS = MOUSE_PUSH_RADIUS;
+		</script>
+
 		<script>
 			import { gsap } from 'gsap';
+
+			// Get physics constants from window
+			const LETTER_GRAVITY = window.LETTER_GRAVITY;
+			const MOUSE_PUSH_RADIUS = window.MOUSE_PUSH_RADIUS;
 
 			// Wait for page to load
 			document.addEventListener('DOMContentLoaded', () => {
 				// Get all words
 				const words = document.querySelectorAll('.word');
+				let allLetterSpans: HTMLElement[] = [];
+				
+				// Calculate total animation time
+				let maxDelay = 0;
 				
 				// Animate each word
 				words.forEach((word, wordIndex) => {
@@ -209,15 +244,17 @@ const renderedEvents = await Promise.all(
 						span.textContent = letter;
 						span.style.display = 'inline-block';
 						span.style.opacity = '0';
+						span.style.cursor = 'default';
 						word.appendChild(span);
 					});
 
 					// Get all letter spans for this word
-					const letterSpans = word.querySelectorAll('span');
+					const letterSpans = word.querySelectorAll<HTMLElement>('span');
 					
 					// Animate letters flying in
 					letterSpans.forEach((letter, letterIndex) => {
 						const delay = (wordIndex * 0.3) + (letterIndex * 0.05);
+						maxDelay = Math.max(maxDelay, delay + 0.8); // track max animation time
 						const fromDirection = Math.random() > 0.5 ? -1 : 1;
 						
 						gsap.fromTo(letter,
@@ -237,6 +274,8 @@ const renderedEvents = await Promise.all(
 								ease: 'back.out(1.7)'
 							}
 						);
+						
+						allLetterSpans.push(letter);
 					});
 				});
 
@@ -246,6 +285,11 @@ const renderedEvents = await Promise.all(
 					duration: 0,
 					delay: 0
 				});
+
+				// Enable physics-based interaction after animation completes + 1 second
+				setTimeout(() => {
+					enablePhysicsInteraction(allLetterSpans);
+				}, (maxDelay + 1) * 1000);
 
 				// Add hover effect for event cards
 				const eventCards = document.querySelectorAll('.event-card');
@@ -275,6 +319,199 @@ const renderedEvents = await Promise.all(
 					});
 				}
 			});
+
+			// Physics-based interaction for letters
+			function enablePhysicsInteraction(letters: HTMLElement[]) {
+				// Physics constants
+				const PUSH_RADIUS = MOUSE_PUSH_RADIUS;     // Distance at which mouse starts pushing letters
+				const PUSH_STRENGTH = 2;    // Force multiplier for push effect
+				const GRAVITY = LETTER_GRAVITY;       // Downward force (near-zero gravity)
+				const DAMPING = 0.99;       // Air resistance coefficient
+				const ROTATION_FACTOR = 2;  // How much letters rotate based on velocity
+				const INITIAL_PUSH_MIN = -3; // Minimum initial velocity
+				const INITIAL_PUSH_MAX = 3;  // Maximum initial velocity
+				const LETTER_RADIUS = 20;   // Collision radius for letters
+				const COLLISION_DAMPING = 0.8; // Energy loss on collision
+
+				interface LetterPhysics {
+					element: HTMLElement;
+					vx: number;  // velocity x
+					vy: number;  // velocity y
+					x: number;   // accumulated x position
+					y: number;   // accumulated y position
+					radius: number; // collision radius
+				}
+
+				const letterPhysics: LetterPhysics[] = letters.map(letter => {
+					// Give each letter a random initial push in a random direction
+					const randomVx = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
+					const randomVy = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
+					
+					// Get current position and computed styles before converting
+					const rect = letter.getBoundingClientRect();
+					const computedStyle = window.getComputedStyle(letter);
+					
+					// Hide original letter (keeps layout intact)
+					letter.style.opacity = '0';
+					letter.style.pointerEvents = 'none';
+					
+					// Create fixed positioned clone for physics (stays in viewport position)
+					const clone = letter.cloneNode(true) as HTMLElement;
+					clone.style.position = 'fixed';
+					clone.style.left = rect.left + 'px';
+					clone.style.top = rect.top + 'px';
+					clone.style.width = rect.width + 'px';
+					clone.style.height = rect.height + 'px';
+					clone.style.margin = '0';
+					clone.style.opacity = '1';
+					clone.style.pointerEvents = 'none';
+					
+					// Copy critical computed styles to preserve appearance
+					clone.style.fontSize = computedStyle.fontSize;
+					clone.style.fontFamily = computedStyle.fontFamily;
+					clone.style.fontWeight = computedStyle.fontWeight;
+					clone.style.color = computedStyle.color;
+					clone.style.display = 'inline-block';
+					
+					// Append to body for fixed positioning
+					document.body.appendChild(clone);
+					
+					return {
+						element: clone,
+						vx: randomVx,
+						vy: randomVy,
+						x: 0,
+						y: 0,
+						radius: LETTER_RADIUS
+					};
+				});
+
+				let mouseX = 0;
+				let mouseY = 0;
+				
+				// Track scroll position to adjust letter positions
+				const wrapper = document.querySelector('.page-wrapper');
+				const initialScrollY = wrapper?.scrollTop || 0;
+				let currentScrollY = initialScrollY;
+				
+				// Update scroll position
+				wrapper?.addEventListener('scroll', () => {
+					currentScrollY = wrapper.scrollTop || 0;
+				});
+
+				// Track mouse position
+				document.addEventListener('mousemove', (e) => {
+					mouseX = e.clientX;
+					mouseY = e.clientY;
+				});
+
+				// Physics simulation loop
+				function updatePhysics() {
+					// Calculate scroll offset from initial position
+					const scrollDelta = currentScrollY - initialScrollY;
+					
+					letterPhysics.forEach(letter => {
+						const rect = letter.element.getBoundingClientRect();
+						const letterCenterX = rect.left + rect.width / 2;
+						const letterCenterY = rect.top + rect.height / 2;
+
+						// Calculate distance from mouse to letter
+						const dx = letterCenterX - mouseX;
+						const dy = letterCenterY - mouseY;
+						const distance = Math.sqrt(dx * dx + dy * dy);
+						
+						if (distance < PUSH_RADIUS && distance > 0) {
+							// Apply push force
+							const force = (PUSH_RADIUS - distance) / PUSH_RADIUS;
+							letter.vx += (dx / distance) * force * PUSH_STRENGTH;
+							letter.vy += (dy / distance) * force * PUSH_STRENGTH;
+						}
+
+						// Apply gravity
+						letter.vy += GRAVITY;
+
+						// Apply air resistance/damping
+						letter.vx *= DAMPING;
+						letter.vy *= DAMPING;
+
+						// Update accumulated position
+						letter.x += letter.vx;
+						letter.y += letter.vy;
+
+						// Apply the accumulated transform, adjusted for scroll
+						// Subtract scrollDelta so letters move "up" when scrolling down
+						gsap.set(letter.element, {
+							x: letter.x,
+							y: letter.y - scrollDelta,
+							rotation: letter.vx * ROTATION_FACTOR,
+							force3D: true
+						});
+					});
+
+					// Check for collisions between letters
+					for (let i = 0; i < letterPhysics.length; i++) {
+						for (let j = i + 1; j < letterPhysics.length; j++) {
+							const letter1 = letterPhysics[i];
+							const letter2 = letterPhysics[j];
+							
+							// Get current positions including transforms
+							const rect1 = letter1.element.getBoundingClientRect();
+							const rect2 = letter2.element.getBoundingClientRect();
+							
+							const center1X = rect1.left + rect1.width / 2;
+							const center1Y = rect1.top + rect1.height / 2;
+							const center2X = rect2.left + rect2.width / 2;
+							const center2Y = rect2.top + rect2.height / 2;
+							
+							const dx = center2X - center1X;
+							const dy = center2Y - center1Y;
+							const distance = Math.sqrt(dx * dx + dy * dy);
+							const minDistance = letter1.radius + letter2.radius;
+							
+							// Check if letters are colliding
+							if (distance < minDistance && distance > 0) {
+								// Calculate collision normal
+								const nx = dx / distance;
+								const ny = dy / distance;
+								
+								// Separate letters
+								const overlap = minDistance - distance;
+								const separationX = nx * overlap * 0.5;
+								const separationY = ny * overlap * 0.5;
+								
+								letter1.x -= separationX;
+								letter1.y -= separationY;
+								letter2.x += separationX;
+								letter2.y += separationY;
+								
+								// Calculate relative velocity
+								const dvx = letter2.vx - letter1.vx;
+								const dvy = letter2.vy - letter1.vy;
+								
+								// Calculate relative velocity in collision normal direction
+								const dvn = dvx * nx + dvy * ny;
+								
+								// Do not resolve if velocities are separating
+								if (dvn < 0) {
+									// Calculate impulse scalar
+									const impulse = dvn * COLLISION_DAMPING;
+									
+									// Apply impulse to velocities
+									letter1.vx += impulse * nx;
+									letter1.vy += impulse * ny;
+									letter2.vx -= impulse * nx;
+									letter2.vy -= impulse * ny;
+								}
+							}
+						}
+					}
+
+					requestAnimationFrame(updatePhysics);
+				}
+
+				// Start physics loop
+				updatePhysics();
+			}
 		</script>
 	</body>
 </html>
