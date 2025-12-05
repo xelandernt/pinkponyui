@@ -24,41 +24,43 @@ const renderedEvents = await Promise.all(
 		<BaseHead title={SITE_TITLE} description="Join the Pink Pony Running Club for running events and community fun!" />
 	</head>
 	<body>
-		<!-- Hero/Cover Section -->
-		<section class="hero">
-			<div class="title-container">
-				<h1 class="hero-title" id="hero-title">
-					<span class="word">PINK</span>
-					<span class="word">PONY</span>
-					<span class="word">RUNNING</span>
-					<span class="word">CLUB</span>
-				</h1>
-			</div>
-			<div class="scroll-indicator">
-				<div class="arrow-down"></div>
-			</div>
-		</section>
+		<div class="page-wrapper">
+			<!-- Hero/Cover Section -->
+			<section class="hero">
+				<div class="title-container">
+					<h1 class="hero-title" id="hero-title">
+						<span class="word">PINK</span>
+						<span class="word">PONY</span>
+						<span class="word">RUNNING</span>
+						<span class="word">CLUB</span>
+					</h1>
+				</div>
+				<div class="scroll-indicator">
+					<div class="arrow-down"></div>
+				</div>
+			</section>
 
-		<!-- Events Section -->
-		<section class="events-section">
-			<h2 class="section-title">Upcoming Events</h2>
-			<div class="events-container">
-				{renderedEvents.map((event) => {
-					const { Content } = event;
-					return (
-						<Event 
-							title={event.data.title}
-							when={event.data.when}
-							where={event.data.where}
-						>
-							<Content />
-						</Event>
-					);
-				})}
-			</div>
-		</section>
+			<!-- Events Section -->
+			<section class="events-section">
+				<h2 class="section-title">Upcoming Events</h2>
+				<div class="events-container">
+					{renderedEvents.map((event) => {
+						const { Content } = event;
+						return (
+							<Event 
+								title={event.data.title}
+								when={event.data.when}
+								where={event.data.where}
+							>
+								<Content />
+							</Event>
+						);
+					})}
+				</div>
+			</section>
 
-		<Footer />
+			<Footer />
+		</div>
 
 		<style>
 			* {
@@ -67,10 +69,22 @@ const renderedEvents = await Promise.all(
 				box-sizing: border-box;
 			}
 
+			html {
+				height: 100%;
+				overflow: hidden;
+			}
+
 			body {
 				font-family: "Atkinson", sans-serif;
 				background: #000;
 				color: #fff;
+				height: 100%;
+				overflow: hidden;
+			}
+
+			.page-wrapper {
+				height: 100%;
+				overflow-y: auto;
 				overflow-x: hidden;
 			}
 
@@ -297,6 +311,8 @@ const renderedEvents = await Promise.all(
 				const GRAVITY = 0.05;       // Downward force (near-zero gravity)
 				const DAMPING = 0.99;       // Air resistance coefficient
 				const ROTATION_FACTOR = 2;  // How much letters rotate based on velocity
+				const INITIAL_PUSH_MIN = -3; // Minimum initial velocity
+				const INITIAL_PUSH_MAX = 3;  // Maximum initial velocity
 
 				interface LetterPhysics {
 					element: HTMLElement;
@@ -307,10 +323,14 @@ const renderedEvents = await Promise.all(
 				}
 
 				const letterPhysics: LetterPhysics[] = letters.map(letter => {
+					// Give each letter a random initial push in a random direction
+					const randomVx = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
+					const randomVy = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
+					
 					return {
 						element: letter,
-						vx: 0,
-						vy: 0,
+						vx: randomVx,
+						vy: randomVy,
 						x: 0,
 						y: 0
 					};
