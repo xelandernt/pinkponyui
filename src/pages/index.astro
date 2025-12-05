@@ -388,6 +388,16 @@ const renderedEvents = await Promise.all(
 
 				let mouseX = 0;
 				let mouseY = 0;
+				
+				// Track scroll position to adjust letter positions
+				const wrapper = document.querySelector('.page-wrapper');
+				const initialScrollY = wrapper?.scrollTop || 0;
+				let currentScrollY = initialScrollY;
+				
+				// Update scroll position
+				wrapper?.addEventListener('scroll', () => {
+					currentScrollY = wrapper.scrollTop || 0;
+				});
 
 				// Track mouse position
 				document.addEventListener('mousemove', (e) => {
@@ -397,6 +407,9 @@ const renderedEvents = await Promise.all(
 
 				// Physics simulation loop
 				function updatePhysics() {
+					// Calculate scroll offset from initial position
+					const scrollDelta = currentScrollY - initialScrollY;
+					
 					letterPhysics.forEach(letter => {
 						const rect = letter.element.getBoundingClientRect();
 						const letterCenterX = rect.left + rect.width / 2;
@@ -425,10 +438,11 @@ const renderedEvents = await Promise.all(
 						letter.x += letter.vx;
 						letter.y += letter.vy;
 
-						// Apply the accumulated transform
+						// Apply the accumulated transform, adjusted for scroll
+						// Subtract scrollDelta so letters move "up" when scrolling down
 						gsap.set(letter.element, {
 							x: letter.x,
-							y: letter.y,
+							y: letter.y - scrollDelta,
 							rotation: letter.vx * ROTATION_FACTOR,
 							force3D: true
 						});
