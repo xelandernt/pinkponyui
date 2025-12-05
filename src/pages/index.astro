@@ -3,7 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Event from '../components/Event.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
-import {SITE_TITLE} from "../consts";
+import {SITE_TITLE, LETTER_GRAVITY, MOUSE_PUSH_RADIUS} from "../consts";
 
 // Get all events from content collection and sort by order
 const allEvents = await getCollection('events');
@@ -124,7 +124,7 @@ const renderedEvents = await Promise.all(
 
 			.scroll-indicator {
 				position: absolute;
-				bottom: 2rem;
+				bottom: 0.5rem;
 				left: 50%;
 				transform: translateX(-50%);
 			}
@@ -208,8 +208,18 @@ const renderedEvents = await Promise.all(
 			}
 		</style>
 
+		<script is:inline define:vars={{LETTER_GRAVITY, MOUSE_PUSH_RADIUS}}>
+			// Physics constants from consts.ts are now available as variables
+			window.LETTER_GRAVITY = LETTER_GRAVITY;
+			window.MOUSE_PUSH_RADIUS = MOUSE_PUSH_RADIUS;
+		</script>
+
 		<script>
 			import { gsap } from 'gsap';
+
+			// Get physics constants from window
+			const LETTER_GRAVITY = window.LETTER_GRAVITY;
+			const MOUSE_PUSH_RADIUS = window.MOUSE_PUSH_RADIUS;
 
 			// Wait for page to load
 			document.addEventListener('DOMContentLoaded', () => {
@@ -311,9 +321,9 @@ const renderedEvents = await Promise.all(
 			// Physics-based interaction for letters
 			function enablePhysicsInteraction(letters: HTMLElement[]) {
 				// Physics constants
-				const PUSH_RADIUS = 80;     // Distance at which mouse starts pushing letters
+				const PUSH_RADIUS = MOUSE_PUSH_RADIUS;     // Distance at which mouse starts pushing letters
 				const PUSH_STRENGTH = 2;    // Force multiplier for push effect
-				const GRAVITY = 0.05;       // Downward force (near-zero gravity)
+				const GRAVITY = LETTER_GRAVITY;       // Downward force (near-zero gravity)
 				const DAMPING = 0.99;       // Air resistance coefficient
 				const ROTATION_FACTOR = 2;  // How much letters rotate based on velocity
 				const INITIAL_PUSH_MIN = -3; // Minimum initial velocity
