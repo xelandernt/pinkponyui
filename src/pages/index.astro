@@ -85,7 +85,7 @@ const renderedEvents = await Promise.all(
 			.page-wrapper {
 				height: 100%;
 				overflow-y: auto;
-				overflow-x: hidden;
+				overflow-x: clip;
 			}
 
 			/* Hero Section */
@@ -97,7 +97,6 @@ const renderedEvents = await Promise.all(
 				align-items: center;
 				justify-content: center;
 				position: relative;
-				overflow: hidden;
 			}
 
 			.title-container {
@@ -119,6 +118,8 @@ const renderedEvents = await Promise.all(
 				display: inline-block;
 				margin: 0 0.2em;
 				opacity: 0;
+				will-change: transform;
+			}
 			}
 
 			.scroll-indicator {
@@ -153,6 +154,8 @@ const renderedEvents = await Promise.all(
 			.events-section {
 				padding: 4rem 2rem;
 				background: linear-gradient(180deg, #000 0%, #1a0a1a 50%, #2d1b2d 100%);
+				position: relative;
+				z-index: 2;
 			}
 
 			.section-title {
@@ -332,8 +335,25 @@ const renderedEvents = await Promise.all(
 					const randomVx = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
 					const randomVy = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
 					
+					// Get current position before converting
+					const rect = letter.getBoundingClientRect();
+					
+					// Hide original letter (keeps layout intact)
+					letter.style.opacity = '0';
+					letter.style.pointerEvents = 'none';
+					
+					// Create fixed clone for physics
+					const clone = letter.cloneNode(true) as HTMLElement;
+					clone.style.position = 'fixed';
+					clone.style.left = rect.left + 'px';
+					clone.style.top = rect.top + 'px';
+					clone.style.margin = '0';
+					clone.style.opacity = '1';
+					clone.style.pointerEvents = 'none';
+					document.body.appendChild(clone);
+					
 					return {
-						element: letter,
+						element: clone,
 						vx: randomVx,
 						vy: randomVy,
 						x: 0,
