@@ -120,11 +120,11 @@ const renderedEvents = await Promise.all(
 				opacity: 0;
 				will-change: transform;
 			}
-			}
+
 
 			.scroll-indicator {
 				position: absolute;
-				bottom: 0.5rem;
+				bottom: 10%;
 				left: 50%;
 				transform: translateX(-50%);
 			}
@@ -136,6 +136,8 @@ const renderedEvents = await Promise.all(
 				border-bottom: 3px solid #ff1493;
 				transform: rotate(-45deg);
 				animation: bounce 2s infinite;
+				position: relative;
+				top: 30%;
 			}
 
 			@keyframes bounce {
