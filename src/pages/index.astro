@@ -335,8 +335,9 @@ const renderedEvents = await Promise.all(
 					const randomVx = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
 					const randomVy = INITIAL_PUSH_MIN + Math.random() * (INITIAL_PUSH_MAX - INITIAL_PUSH_MIN);
 					
-					// Get current position before converting
+					// Get current position and computed styles before converting
 					const rect = letter.getBoundingClientRect();
+					const computedStyle = window.getComputedStyle(letter);
 					
 					// Hide original letter (keeps layout intact)
 					letter.style.opacity = '0';
@@ -347,9 +348,19 @@ const renderedEvents = await Promise.all(
 					clone.style.position = 'fixed';
 					clone.style.left = rect.left + 'px';
 					clone.style.top = rect.top + 'px';
+					clone.style.width = rect.width + 'px';
+					clone.style.height = rect.height + 'px';
 					clone.style.margin = '0';
 					clone.style.opacity = '1';
 					clone.style.pointerEvents = 'none';
+					
+					// Copy critical computed styles to preserve appearance
+					clone.style.fontSize = computedStyle.fontSize;
+					clone.style.fontFamily = computedStyle.fontFamily;
+					clone.style.fontWeight = computedStyle.fontWeight;
+					clone.style.color = computedStyle.color;
+					clone.style.display = 'inline-block';
+					
 					document.body.appendChild(clone);
 					
 					return {
