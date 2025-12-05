@@ -97,10 +97,13 @@ const renderedEvents = await Promise.all(
 				align-items: center;
 				justify-content: center;
 				position: relative;
+				overflow: hidden;
 			}
 
 			.title-container {
 				text-align: center;
+				position: relative;
+				z-index: 1;
 			}
 
 			.hero-title {
@@ -148,7 +151,6 @@ const renderedEvents = await Promise.all(
 
 			/* Events Section */
 			.events-section {
-				min-height: 100vh;
 				padding: 4rem 2rem;
 				background: linear-gradient(180deg, #000 0%, #1a0a1a 50%, #2d1b2d 100%);
 			}
@@ -313,6 +315,8 @@ const renderedEvents = await Promise.all(
 				const ROTATION_FACTOR = 2;  // How much letters rotate based on velocity
 				const INITIAL_PUSH_MIN = -3; // Minimum initial velocity
 				const INITIAL_PUSH_MAX = 3;  // Maximum initial velocity
+				const LETTER_RADIUS = 20;   // Collision radius for letters
+				const COLLISION_DAMPING = 0.8; // Energy loss on collision
 
 				interface LetterPhysics {
 					element: HTMLElement;
@@ -320,6 +324,7 @@ const renderedEvents = await Promise.all(
 					vy: number;  // velocity y
 					x: number;   // accumulated x position
 					y: number;   // accumulated y position
+					radius: number; // collision radius
 				}
 
 				const letterPhysics: LetterPhysics[] = letters.map(letter => {
@@ -332,7 +337,8 @@ const renderedEvents = await Promise.all(
 						vx: randomVx,
 						vy: randomVy,
 						x: 0,
-						y: 0
+						y: 0,
+						radius: LETTER_RADIUS
 					};
 				});
 
@@ -383,6 +389,64 @@ const renderedEvents = await Promise.all(
 							force3D: true
 						});
 					});
+
+					// Check for collisions between letters
+					for (let i = 0; i < letterPhysics.length; i++) {
+						for (let j = i + 1; j < letterPhysics.length; j++) {
+							const letter1 = letterPhysics[i];
+							const letter2 = letterPhysics[j];
+							
+							// Get current positions including transforms
+							const rect1 = letter1.element.getBoundingClientRect();
+							const rect2 = letter2.element.getBoundingClientRect();
+							
+							const center1X = rect1.left + rect1.width / 2;
+							const center1Y = rect1.top + rect1.height / 2;
+							const center2X = rect2.left + rect2.width / 2;
+							const center2Y = rect2.top + rect2.height / 2;
+							
+							const dx = center2X - center1X;
+							const dy = center2Y - center1Y;
+							const distance = Math.sqrt(dx * dx + dy * dy);
+							const minDistance = letter1.radius + letter2.radius;
+							
+							// Check if letters are colliding
+							if (distance < minDistance && distance > 0) {
+								// Calculate collision normal
+								const nx = dx / distance;
+								const ny = dy / distance;
+								
+								// Separate letters
+								const overlap = minDistance - distance;
+								const separationX = nx * overlap * 0.5;
+								const separationY = ny * overlap * 0.5;
+								
+								letter1.x -= separationX;
+								letter1.y -= separationY;
+								letter2.x += separationX;
+								letter2.y += separationY;
+								
+								// Calculate relative velocity
+								const dvx = letter2.vx - letter1.vx;
+								const dvy = letter2.vy - letter1.vy;
+								
+								// Calculate relative velocity in collision normal direction
+								const dvn = dvx * nx + dvy * ny;
+								
+								// Do not resolve if velocities are separating
+								if (dvn < 0) {
+									// Calculate impulse scalar
+									const impulse = dvn * COLLISION_DAMPING;
+									
+									// Apply impulse to velocities
+									letter1.vx += impulse * nx;
+									letter1.vy += impulse * ny;
+									letter2.vx -= impulse * nx;
+									letter2.vy -= impulse * ny;
+								}
+							}
+						}
+					}
 
 					requestAnimationFrame(updatePhysics);
 				}
