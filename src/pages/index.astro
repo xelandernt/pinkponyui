@@ -30,7 +30,7 @@ const renderedEvents = await Promise.all(
 				<h1 class="hero-title" id="hero-title">
 					<span class="word">PINK</span>
 					<span class="word">PONY</span>
-					<span class="word">RUN</span>
+					<span class="word">RUNNING</span>
 					<span class="word">CLUB</span>
 				</h1>
 			</div>
@@ -196,6 +196,10 @@ const renderedEvents = await Promise.all(
 			document.addEventListener('DOMContentLoaded', () => {
 				// Get all words
 				const words = document.querySelectorAll('.word');
+				let allLetterSpans: HTMLElement[] = [];
+				
+				// Calculate total animation time
+				let maxDelay = 0;
 				
 				// Animate each word
 				words.forEach((word, wordIndex) => {
@@ -209,15 +213,17 @@ const renderedEvents = await Promise.all(
 						span.textContent = letter;
 						span.style.display = 'inline-block';
 						span.style.opacity = '0';
+						span.style.cursor = 'default';
 						word.appendChild(span);
 					});
 
 					// Get all letter spans for this word
-					const letterSpans = word.querySelectorAll('span');
+					const letterSpans = word.querySelectorAll<HTMLElement>('span');
 					
 					// Animate letters flying in
 					letterSpans.forEach((letter, letterIndex) => {
 						const delay = (wordIndex * 0.3) + (letterIndex * 0.05);
+						maxDelay = Math.max(maxDelay, delay + 0.8); // track max animation time
 						const fromDirection = Math.random() > 0.5 ? -1 : 1;
 						
 						gsap.fromTo(letter,
@@ -237,6 +243,8 @@ const renderedEvents = await Promise.all(
 								ease: 'back.out(1.7)'
 							}
 						);
+						
+						allLetterSpans.push(letter);
 					});
 				});
 
@@ -246,6 +254,11 @@ const renderedEvents = await Promise.all(
 					duration: 0,
 					delay: 0
 				});
+
+				// Enable physics-based interaction after animation completes + 1 second
+				setTimeout(() => {
+					enablePhysicsInteraction(allLetterSpans);
+				}, (maxDelay + 1) * 1000);
 
 				// Add hover effect for event cards
 				const eventCards = document.querySelectorAll('.event-card');
@@ -275,6 +288,85 @@ const renderedEvents = await Promise.all(
 					});
 				}
 			});
+
+			// Physics-based interaction for letters
+			function enablePhysicsInteraction(letters: HTMLElement[]) {
+				interface LetterPhysics {
+					element: HTMLElement;
+					vx: number;  // velocity x
+					vy: number;  // velocity y
+					x: number;   // accumulated x position
+					y: number;   // accumulated y position
+				}
+
+				const letterPhysics: LetterPhysics[] = letters.map(letter => {
+					return {
+						element: letter,
+						vx: 0,
+						vy: 0,
+						x: 0,
+						y: 0
+					};
+				});
+
+				let mouseX = 0;
+				let mouseY = 0;
+
+				// Track mouse position
+				document.addEventListener('mousemove', (e) => {
+					mouseX = e.clientX;
+					mouseY = e.clientY;
+				});
+
+				// Physics simulation loop
+				function updatePhysics() {
+					letterPhysics.forEach(letter => {
+						const rect = letter.element.getBoundingClientRect();
+						const letterCenterX = rect.left + rect.width / 2;
+						const letterCenterY = rect.top + rect.height / 2;
+
+						// Calculate distance from mouse to letter
+						const dx = letterCenterX - mouseX;
+						const dy = letterCenterY - mouseY;
+						const distance = Math.sqrt(dx * dx + dy * dy);
+
+						// Push force threshold (how close mouse needs to be)
+						const pushRadius = 80;
+						
+						if (distance < pushRadius && distance > 0) {
+							// Apply push force
+							const force = (pushRadius - distance) / pushRadius;
+							const pushStrength = 2;
+							letter.vx += (dx / distance) * force * pushStrength;
+							letter.vy += (dy / distance) * force * pushStrength;
+						}
+
+						// Apply gravity (zero gravity as specified, but slight downward drift)
+						letter.vy += 0.05;
+
+						// Apply air resistance/damping
+						letter.vx *= 0.99;
+						letter.vy *= 0.99;
+
+						// Update accumulated position
+						letter.x += letter.vx;
+						letter.y += letter.vy;
+
+						// Apply the accumulated transform
+						gsap.set(letter.element, {
+							x: letter.x,
+							y: letter.y,
+							rotation: letter.vx * 2,  // rotate based on horizontal velocity
+							force3D: true
+						});
+					});
+
+					requestAnimationFrame(updatePhysics);
+				}
+
+				// Start physics loop
+				updatePhysics();
+			}
 		</script>
 	</body>
 </html>
