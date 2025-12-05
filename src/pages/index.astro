@@ -350,16 +350,18 @@ const renderedEvents = await Promise.all(
 					// Get current position and computed styles before converting
 					const rect = letter.getBoundingClientRect();
 					const computedStyle = window.getComputedStyle(letter);
+					const wrapper = document.querySelector('.page-wrapper');
+					const scrollTop = wrapper?.scrollTop || 0;
 					
 					// Hide original letter (keeps layout intact)
 					letter.style.opacity = '0';
 					letter.style.pointerEvents = 'none';
 					
-					// Create fixed clone for physics
+					// Create absolute positioned clone for physics (independent of scroll)
 					const clone = letter.cloneNode(true) as HTMLElement;
-					clone.style.position = 'fixed';
+					clone.style.position = 'absolute';
 					clone.style.left = rect.left + 'px';
-					clone.style.top = rect.top + 'px';
+					clone.style.top = (rect.top + scrollTop) + 'px';  // Account for current scroll position
 					clone.style.width = rect.width + 'px';
 					clone.style.height = rect.height + 'px';
 					clone.style.margin = '0';
@@ -373,7 +375,13 @@ const renderedEvents = await Promise.all(
 					clone.style.color = computedStyle.color;
 					clone.style.display = 'inline-block';
 					
-					document.body.appendChild(clone);
+					// Append to page-wrapper so letters stay in document flow (not viewport)
+					const pageWrapper = document.querySelector('.page-wrapper');
+					if (pageWrapper) {
+						pageWrapper.appendChild(clone);
+					} else {
+						document.body.appendChild(clone);
+					}
 					
 					return {
 						element: clone,
