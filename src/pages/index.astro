@@ -291,6 +291,13 @@ const renderedEvents = await Promise.all(
 
 			// Physics-based interaction for letters
 			function enablePhysicsInteraction(letters: HTMLElement[]) {
+				// Physics constants
+				const PUSH_RADIUS = 80;     // Distance at which mouse starts pushing letters
+				const PUSH_STRENGTH = 2;    // Force multiplier for push effect
+				const GRAVITY = 0.05;       // Downward force (near-zero gravity)
+				const DAMPING = 0.99;       // Air resistance coefficient
+				const ROTATION_FACTOR = 2;  // How much letters rotate based on velocity
+
 				interface LetterPhysics {
 					element: HTMLElement;
 					vx: number;  // velocity x
@@ -329,24 +336,20 @@ const renderedEvents = await Promise.all(
 						const dx = letterCenterX - mouseX;
 						const dy = letterCenterY - mouseY;
 						const distance = Math.sqrt(dx * dx + dy * dy);
-
-						// Push force threshold (how close mouse needs to be)
-						const pushRadius = 80;
 						
-						if (distance < pushRadius && distance > 0) {
+						if (distance < PUSH_RADIUS && distance > 0) {
 							// Apply push force
-							const force = (pushRadius - distance) / pushRadius;
-							const pushStrength = 2;
-							letter.vx += (dx / distance) * force * pushStrength;
-							letter.vy += (dy / distance) * force * pushStrength;
+							const force = (PUSH_RADIUS - distance) / PUSH_RADIUS;
+							letter.vx += (dx / distance) * force * PUSH_STRENGTH;
+							letter.vy += (dy / distance) * force * PUSH_STRENGTH;
 						}
 
-						// Apply gravity (zero gravity as specified, but slight downward drift)
-						letter.vy += 0.05;
+						// Apply gravity
+						letter.vy += GRAVITY;
 
 						// Apply air resistance/damping
-						letter.vx *= 0.99;
-						letter.vy *= 0.99;
+						letter.vx *= DAMPING;
+						letter.vy *= DAMPING;
 
 						// Update accumulated position
 						letter.x += letter.vx;
@@ -356,7 +359,7 @@ const renderedEvents = await Promise.all(
 						gsap.set(letter.element, {
 							x: letter.x,
 							y: letter.y,
-							rotation: letter.vx * 2,  // rotate based on horizontal velocity
+							rotation: letter.vx * ROTATION_FACTOR,
 							force3D: true
 						});
 					});
