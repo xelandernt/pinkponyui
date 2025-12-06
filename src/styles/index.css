@@ -22,15 +22,18 @@ body {
 /* Pink scrollbar styling */
 .page-wrapper::-webkit-scrollbar {
 	width: 12px;
+	transition: width 0.3s ease;
 }
 
 .page-wrapper::-webkit-scrollbar-track {
 	background: #1a0a1a;
+	transition: background 0.3s ease;
 }
 
 .page-wrapper::-webkit-scrollbar-thumb {
 	background: #ff1493;
 	border-radius: 6px;
+	transition: background 0.3s ease;
 }
 
 .page-wrapper::-webkit-scrollbar-thumb:hover {
@@ -41,4 +44,24 @@ body {
 .page-wrapper {
 	scrollbar-width: thin;
 	scrollbar-color: #ff1493 #1a0a1a;
+	transition: scrollbar-color 0.3s ease;
+}
+
+/* Auto-hide scrollbar - hide by default */
+.page-wrapper.scrollbar-hidden::-webkit-scrollbar {
+	width: 0px;
+}
+
+.page-wrapper.scrollbar-hidden::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.page-wrapper.scrollbar-hidden::-webkit-scrollbar-thumb {
+	background: transparent;
+}
+
+/* For Firefox - use none to hide, thin to show */
+.page-wrapper.scrollbar-hidden {
+	scrollbar-width: none;
+	scrollbar-color: transparent transparent;
 }
