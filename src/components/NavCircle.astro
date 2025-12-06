@@ -13,18 +13,18 @@ const { position, href, text } = Astro.props;
 <a href={href} class={`nav-circle ${position}`}>
 	<svg class="circle-svg" viewBox="0 0 200 200">
 		<defs>
-			{/* Path for bottom-right (top-right position - Blog) - text along visible bottom-right quadrant */}
+			{/* Path for bottom-right (top-right position - Blog) - longer arc in visible quadrant */}
 			{position === 'top-right' && (
 				<path 
 					id={`circlePath-${position}`}
-					d="M 145,155 A 75,75 0 0,0 155,145"
+					d="M 175,100 A 75,75 0 0,1 100,175"
 				/>
 			)}
-			{/* Path for bottom-left (top-left position - Home) - text along visible bottom-left quadrant, reversed */}
+			{/* Path for bottom-left (top-left position - Home) - longer arc in visible quadrant */}
 			{position === 'top-left' && (
 				<path 
 					id={`circlePath-${position}`}
-					d="M 45,145 A 75,75 0 0,0 55,155"
+					d="M 100,175 A 75,75 0 0,1 25,100"
 				/>
 			)}
 		</defs>
