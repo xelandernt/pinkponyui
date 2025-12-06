@@ -1,9 +1,22 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Event from '../components/Event.astro';
+import Hero from '../components/Hero.astro';
+import EventsSection from '../components/EventsSection.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
-import {SITE_TITLE, LETTER_GRAVITY, MOUSE_PUSH_RADIUS} from "../consts";
+import {
+	SITE_TITLE, 
+	LETTER_GRAVITY, 
+	MOUSE_PUSH_RADIUS,
+	PUSH_STRENGTH,
+	DAMPING,
+	ROTATION_FACTOR,
+	INITIAL_PUSH_MIN,
+	INITIAL_PUSH_MAX,
+	LETTER_RADIUS,
+	COLLISION_DAMPING
+} from "../consts";
+import '../styles/index.css';
 
 // Get all events from content collection and sort by order
 const allEvents = await getCollection('events');
@@ -25,195 +38,32 @@ const renderedEvents = await Promise.all(
 	</head>
 	<body>
 		<div class="page-wrapper">
-			<!-- Hero/Cover Section -->
-			<section class="hero">
-				<div class="title-container">
-					<h1 class="hero-title" id="hero-title">
-						<span class="word">PINK</span>
-						<span class="word">PONY</span>
-						<span class="word">RUNNING</span>
-						<span class="word">CLUB</span>
-					</h1>
-				</div>
-				<div class="scroll-indicator">
-					<div class="arrow-down"></div>
-				</div>
-			</section>
-
-			<!-- Events Section -->
-			<section class="events-section">
-				<h2 class="section-title">Upcoming Events</h2>
-				<div class="events-container">
-					{renderedEvents.map((event) => {
-						const { Content } = event;
-						return (
-							<Event 
-								title={event.data.title}
-								when={event.data.when}
-								where={event.data.where}
-							>
-								<Content />
-							</Event>
-						);
-					})}
-				</div>
-			</section>
-
+			<Hero />
+			<EventsSection renderedEvents={renderedEvents} />
 			<Footer />
 		</div>
 
-		<style>
-			* {
-				margin: 0;
-				padding: 0;
-				box-sizing: border-box;
-			}
-
-			html {
-				height: 100%;
-				overflow: hidden;
-			}
-
-			body {
-				font-family: "Atkinson", sans-serif;
-				background: #000;
-				color: #fff;
-				height: 100%;
-				overflow: hidden;
-			}
-
-			.page-wrapper {
-				height: 100%;
-				overflow-y: auto;
-				overflow-x: clip;
-			}
-
-			/* Hero Section */
-			.hero {
-				height: 100vh;
-				background: #000;
-				display: flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				position: relative;
-			}
-
-			.title-container {
-				text-align: center;
-				position: relative;
-				z-index: 1;
-			}
-
-			.hero-title {
-				font-family: "Lobster", cursive;
-				font-size: clamp(3rem, 10vw, 8rem);
-				color: #ff1493;
-				font-weight: 400;
-				line-height: 1.2;
-				margin: 0;
-			}
-
-			.word {
-				display: inline-block;
-				margin: 0 0.2em;
-				opacity: 0;
-				will-change: transform;
-			}
-
-
-			.scroll-indicator {
-				position: absolute;
-				bottom: 10%;
-				left: 50%;
-				transform: translateX(-50%);
-			}
-
-			.arrow-down {
-				width: 30px;
-				height: 30px;
-				border-left: 3px solid #ff1493;
-				border-bottom: 3px solid #ff1493;
-				transform: rotate(-45deg);
-				animation: bounce 2s infinite;
-				position: relative;
-				top: 30%;
-			}
-
-			@keyframes bounce {
-				0%, 20%, 50%, 80%, 100% {
-					transform: translateY(0) rotate(-45deg);
-				}
-				40% {
-					transform: translateY(-10px) rotate(-45deg);
-				}
-				60% {
-					transform: translateY(-5px) rotate(-45deg);
-				}
-			}
-
-			/* Events Section */
-			.events-section {
-				padding: 4rem 2rem;
-				background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(26, 10, 26, 0.85) 50%, rgba(45, 27, 45, 0.85) 100%);
-				position: relative;
-				z-index: 2;
-			}
-
-			.section-title {
-				font-family: "Lobster", cursive;
-				font-size: clamp(2.5rem, 6vw, 5rem);
-				color: #ff69b4;
-				text-align: center;
-				margin-bottom: 3rem;
-			}
-
-			.events-container {
-				max-width: 1200px;
-				margin: 0 auto;
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-				gap: 2rem;
-			}
-
-			/* Hover effect: darken all cards when one is hovered */
-			.events-container.has-hovered-card :global(.event-card) {
-				opacity: 0.4;
-				filter: brightness(0.5);
-			}
-
-			.events-container.has-hovered-card :global(.event-card.is-hovered) {
-				opacity: 1;
-				filter: brightness(1);
-				transform: translateY(-10px) scale(1.05);
-				box-shadow: 0 15px 40px rgba(255, 20, 147, 0.5);
-				z-index: 10;
-			}
-
-			@media (max-width: 768px) {
-				.hero-title {
-					font-size: clamp(2rem, 8vw, 6rem);
-				}
-
-				.word {
-					display: block;
-					margin: 0.1em 0;
-				}
-
-				.events-section {
-					padding: 3rem 1rem;
-				}
-
-				.events-container {
-					grid-template-columns: 1fr;
-				}
-			}
-		</style>
-
-		<script is:inline define:vars={{LETTER_GRAVITY, MOUSE_PUSH_RADIUS}}>
+		<script is:inline define:vars={{
+			LETTER_GRAVITY, 
+			MOUSE_PUSH_RADIUS,
+			PUSH_STRENGTH,
+			DAMPING,
+			ROTATION_FACTOR,
+			INITIAL_PUSH_MIN,
+			INITIAL_PUSH_MAX,
+			LETTER_RADIUS,
+			COLLISION_DAMPING
+		}}>
 			// Physics constants from consts.ts are now available as variables
 			window.LETTER_GRAVITY = LETTER_GRAVITY;
 			window.MOUSE_PUSH_RADIUS = MOUSE_PUSH_RADIUS;
+			window.PUSH_STRENGTH = PUSH_STRENGTH;
+			window.DAMPING = DAMPING;
+			window.ROTATION_FACTOR = ROTATION_FACTOR;
+			window.INITIAL_PUSH_MIN = INITIAL_PUSH_MIN;
+			window.INITIAL_PUSH_MAX = INITIAL_PUSH_MAX;
+			window.LETTER_RADIUS = LETTER_RADIUS;
+			window.COLLISION_DAMPING = COLLISION_DAMPING;
 		</script>
 
 		<script>
@@ -222,6 +72,13 @@ const renderedEvents = await Promise.all(
 			// Get physics constants from window
 			const LETTER_GRAVITY = window.LETTER_GRAVITY;
 			const MOUSE_PUSH_RADIUS = window.MOUSE_PUSH_RADIUS;
+			const PUSH_STRENGTH = window.PUSH_STRENGTH;
+			const DAMPING = window.DAMPING;
+			const ROTATION_FACTOR = window.ROTATION_FACTOR;
+			const INITIAL_PUSH_MIN = window.INITIAL_PUSH_MIN;
+			const INITIAL_PUSH_MAX = window.INITIAL_PUSH_MAX;
+			const LETTER_RADIUS = window.LETTER_RADIUS;
+			const COLLISION_DAMPING = window.COLLISION_DAMPING;
 
 			// Wait for page to load
 			document.addEventListener('DOMContentLoaded', () => {
@@ -322,16 +179,9 @@ const renderedEvents = await Promise.all(
 
 			// Physics-based interaction for letters
 			function enablePhysicsInteraction(letters: HTMLElement[]) {
-				// Physics constants
+				// Physics constants are now imported from consts.ts
 				const PUSH_RADIUS = MOUSE_PUSH_RADIUS;     // Distance at which mouse starts pushing letters
-				const PUSH_STRENGTH = 2;    // Force multiplier for push effect
-				const GRAVITY = LETTER_GRAVITY;       // Downward force (near-zero gravity)
-				const DAMPING = 0.99;       // Air resistance coefficient
-				const ROTATION_FACTOR = 2;  // How much letters rotate based on velocity
-				const INITIAL_PUSH_MIN = -3; // Minimum initial velocity
-				const INITIAL_PUSH_MAX = 3;  // Maximum initial velocity
-				const LETTER_RADIUS = 20;   // Collision radius for letters
-				const COLLISION_DAMPING = 0.8; // Energy loss on collision
+				const GRAVITY = LETTER_GRAVITY;            // Downward force (near-zero gravity)
 
 				interface LetterPhysics {
 					element: HTMLElement;

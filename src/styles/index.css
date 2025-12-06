@@ -1,0 +1,20 @@
+/* Index page specific styles */
+
+html {
+	height: 100%;
+	overflow: hidden;
+}
+
+body {
+	font-family: "Atkinson", sans-serif;
+	background: #000; /* Using hardcoded value since this is page-specific */
+	color: #fff; /* Using hardcoded value since this is page-specific */
+	height: 100%;
+	overflow: hidden;
+}
+
+.page-wrapper {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: clip;
+}

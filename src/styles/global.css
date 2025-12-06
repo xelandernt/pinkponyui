@@ -4,6 +4,13 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+/* CSS Reset */
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
 :root {
 	--accent: #2337ff;
 	--accent-dark: #000d8a;
