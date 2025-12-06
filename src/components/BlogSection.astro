@@ -49,7 +49,7 @@ import BlogEntry from './BlogEntry.astro';
 }}>
 	.blog-section {
 		padding: 4rem 2rem;
-		background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(26, 10, 26, 0.85) 50%, rgba(45, 27, 45, 0.85) 100%);
+		background: transparent;
 		position: relative;
 		z-index: 2;
 		overflow: hidden;
@@ -59,9 +59,10 @@ import BlogEntry from './BlogEntry.astro';
 	.section-title {
 		font-family: "Lobster", cursive;
 		font-size: clamp(2.5rem, 6vw, 5rem);
-		color: var(--secondaryPink);
+		color: #fff;
 		text-align: center;
 		margin-bottom: 3rem;
+		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 	}
 
 	.blog-container {

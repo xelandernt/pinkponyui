@@ -38,8 +38,8 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 	transitionSpeed: ANIMATION.TRANSITION_SPEED
 }}>
 	.blog-entry {
-		background: linear-gradient(135deg, var(--darkerPurple) 0%, var(--darkPurple) 100%);
-		border: 2px solid var(--primaryPink);
+		background: rgba(255, 255, 255, 0.95);
+		border: 3px solid #000;
 		border-radius: var(--borderRadius);
 		padding: 2rem;
 		transition: all var(--transitionSpeed) ease;
@@ -56,7 +56,7 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 	.blog-title {
 		font-family: "Lobster", cursive;
 		font-size: 2rem;
-		color: var(--secondaryPink);
+		color: #000;
 		margin-bottom: 1rem;
 	}
 
@@ -69,19 +69,19 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 
 	.blog-date,
 	.blog-author {
-		color: var(--orchid);
+		color: #333;
 		font-size: 0.9rem;
 		margin: 0;
 	}
 
 	.blog-excerpt {
-		color: var(--lightPink);
+		color: #444;
 		font-style: italic;
 		margin-bottom: 1rem;
 	}
 
 	.expand-indicator {
-		color: var(--secondaryPink);
+		color: #000;
 		font-size: 0.9rem;
 		font-weight: bold;
 		opacity: 0;
@@ -102,7 +102,7 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 	}
 
 	.blog-content {
-		color: var(--lightPink);
+		color: #333;
 		line-height: 1.6;
 		font-size: 1rem;
 		max-height: 0;
@@ -120,7 +120,7 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 
 	.blog-content :global(h2) {
 		font-family: "Lobster", cursive;
-		color: var(--secondaryPink);
+		color: #000;
 		font-size: 1.5rem;
 		margin-top: 1.5rem;
 		margin-bottom: 0.75rem;
@@ -128,30 +128,30 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 
 	.blog-content :global(h3) {
 		font-family: "Lobster", cursive;
-		color: var(--orchid);
+		color: #222;
 		font-size: 1.25rem;
 		margin-top: 1.25rem;
 		margin-bottom: 0.5rem;
 	}
 
 	.blog-content :global(strong) {
-		color: var(--secondaryPink);
+		color: #000;
 		font-weight: 600;
 	}
 
 	.blog-content :global(em) {
-		color: var(--orchid);
+		color: #333;
 		font-style: italic;
 	}
 
 	.blog-content :global(a) {
-		color: var(--secondaryPink);
+		color: #000;
 		text-decoration: underline;
 		transition: color var(--transitionSpeed) ease;
 	}
 
 	.blog-content :global(a:hover) {
-		color: var(--primaryPink);
+		color: #444;
 	}
 
 	.blog-content :global(p) {
@@ -162,7 +162,7 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 	.blog-content :global(ol) {
 		margin: 0.75rem 0;
 		padding-left: 1.5rem;
-		color: var(--lightPink);
+		color: #333;
 	}
 
 	.blog-content :global(li) {
