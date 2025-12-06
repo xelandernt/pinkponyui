@@ -1,5 +1,5 @@
 ---
-import { COLORS, LAYOUT } from '../consts';
+import { COLORS, LAYOUT, ANIMATION } from '../consts';
 ---
 
 <section class="hero">
@@ -19,7 +19,8 @@ import { COLORS, LAYOUT } from '../consts';
 <style define:vars={{ 
 	primaryPink: COLORS.PRIMARY_PINK, 
 	black: COLORS.BLACK,
-	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT
+	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT,
+	bounceDuration: ANIMATION.BOUNCE_DURATION
 }}>
 	/* Hero Section */
 	.hero {
@@ -69,7 +70,7 @@ import { COLORS, LAYOUT } from '../consts';
 		border-left: 3px solid var(--primaryPink);
 		border-bottom: 3px solid var(--primaryPink);
 		transform: rotate(-45deg);
-		animation: bounce 2s infinite;
+		animation: bounce var(--bounceDuration) infinite;
 		position: relative;
 		top: 30%;
 	}
