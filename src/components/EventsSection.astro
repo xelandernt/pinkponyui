@@ -1,0 +1,78 @@
+---
+interface Props {
+	renderedEvents: any[];
+}
+
+const { renderedEvents } = Astro.props;
+
+import Event from './Event.astro';
+---
+
+<section class="events-section">
+	<h2 class="section-title">Upcoming Events</h2>
+	<div class="events-container">
+		{renderedEvents.map((event) => {
+			const { Content } = event;
+			return (
+				<Event 
+					title={event.data.title}
+					when={event.data.when}
+					where={event.data.where}
+				>
+					<Content />
+				</Event>
+			);
+		})}
+	</div>
+</section>
+
+<style>
+	/* Events Section */
+	.events-section {
+		padding: 4rem 2rem;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(26, 10, 26, 0.85) 50%, rgba(45, 27, 45, 0.85) 100%);
+		position: relative;
+		z-index: 2;
+		overflow: hidden;
+	}
+
+	.section-title {
+		font-family: "Lobster", cursive;
+		font-size: clamp(2.5rem, 6vw, 5rem);
+		color: #ff69b4;
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.events-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+		gap: 2rem;
+	}
+
+	/* Hover effect: darken all cards when one is hovered */
+	.events-container.has-hovered-card :global(.event-card) {
+		opacity: 0.4;
+		filter: brightness(0.5);
+	}
+
+	.events-container.has-hovered-card :global(.event-card.is-hovered) {
+		opacity: 1;
+		filter: brightness(1);
+		transform: translateY(-10px) scale(1.05);
+		box-shadow: 0 15px 40px rgba(255, 20, 147, 0.5);
+		z-index: 10;
+	}
+
+	@media (max-width: 768px) {
+		.events-section {
+			padding: 3rem 1rem;
+		}
+
+		.events-container {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>
