@@ -1,5 +1,5 @@
 ---
-import { COLORS } from '../consts';
+import { COLORS, LAYOUT } from '../consts';
 ---
 
 <section class="hero">
@@ -16,7 +16,11 @@ import { COLORS } from '../consts';
 	</div>
 </section>
 
-<style define:vars={{ primaryPink: COLORS.PRIMARY_PINK, black: COLORS.BLACK }}>
+<style define:vars={{ 
+	primaryPink: COLORS.PRIMARY_PINK, 
+	black: COLORS.BLACK,
+	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT
+}}>
 	/* Hero Section */
 	.hero {
 		height: 100vh;
@@ -82,7 +86,7 @@ import { COLORS } from '../consts';
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: var(--mobileBreakpoint)) {
 		.hero-title {
 			font-size: clamp(2rem, 8vw, 6rem);
 		}

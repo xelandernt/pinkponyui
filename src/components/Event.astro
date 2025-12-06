@@ -1,5 +1,5 @@
 ---
-import { COLORS } from '../consts';
+import { COLORS, LAYOUT } from '../consts';
 
 interface Props {
 	title: string;
@@ -27,12 +27,13 @@ const { title, when, where } = Astro.props;
 	primaryPink: COLORS.PRIMARY_PINK,
 	secondaryPink: COLORS.SECONDARY_PINK,
 	lightPink: COLORS.LIGHT_PINK,
-	orchid: COLORS.ORCHID
+	orchid: COLORS.ORCHID,
+	borderRadius: LAYOUT.BORDER_RADIUS_SMALL
 }}>
 	.event-card {
 		background: linear-gradient(135deg, var(--darkerPurple) 0%, var(--darkPurple) 100%);
 		border: 2px solid var(--primaryPink);
-		border-radius: 15px;
+		border-radius: var(--borderRadius);
 		padding: 2rem;
 		transition: all 0.3s ease;
 		position: relative;

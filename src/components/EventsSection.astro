@@ -1,5 +1,5 @@
 ---
-import { COLORS } from '../consts';
+import { COLORS, LAYOUT } from '../consts';
 
 interface RenderedEvent {
 	data: {
@@ -37,7 +37,12 @@ import Event from './Event.astro';
 	</div>
 </section>
 
-<style define:vars={{ secondaryPink: COLORS.SECONDARY_PINK, primaryPink: COLORS.PRIMARY_PINK }}>
+<style define:vars={{ 
+	secondaryPink: COLORS.SECONDARY_PINK, 
+	primaryPink: COLORS.PRIMARY_PINK,
+	maxWidth: LAYOUT.MAX_CONTENT_WIDTH,
+	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT
+}}>
 	/* Events Section */
 	.events-section {
 		padding: 4rem 2rem;
@@ -56,7 +61,7 @@ import Event from './Event.astro';
 	}
 
 	.events-container {
-		max-width: 1200px;
+		max-width: var(--maxWidth);
 		margin: 0 auto;
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -77,7 +82,7 @@ import Event from './Event.astro';
 		z-index: 10;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: var(--mobileBreakpoint)) {
 		.events-section {
 			padding: 3rem 1rem;
 		}

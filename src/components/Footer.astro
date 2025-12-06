@@ -1,5 +1,5 @@
 ---
-import {INSTAGRAM_URL, SITE_TITLE, COLORS} from '../consts';
+import {INSTAGRAM_URL, SITE_TITLE, COLORS, LAYOUT} from '../consts';
 ---
 
 <footer class="footer">
@@ -28,7 +28,10 @@ import {INSTAGRAM_URL, SITE_TITLE, COLORS} from '../consts';
 	lightPink: COLORS.LIGHT_PINK,
 	primaryPink: COLORS.PRIMARY_PINK,
 	secondaryPink: COLORS.SECONDARY_PINK,
-	orchid: COLORS.ORCHID
+	orchid: COLORS.ORCHID,
+	maxWidth: LAYOUT.MAX_CONTENT_WIDTH,
+	borderRadiusLarge: LAYOUT.BORDER_RADIUS_LARGE,
+	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT
 }}>
 	.footer {
 		background: linear-gradient(180deg, rgba(45, 27, 45, 0.85) 0%, rgba(26, 10, 26, 0.85) 100%);
@@ -41,7 +44,7 @@ import {INSTAGRAM_URL, SITE_TITLE, COLORS} from '../consts';
 	}
 
 	.footer-content {
-		max-width: 1200px;
+		max-width: var(--maxWidth);
 		margin: 0 auto;
 		display: flex;
 		justify-content: space-between;
@@ -81,7 +84,7 @@ import {INSTAGRAM_URL, SITE_TITLE, COLORS} from '../consts';
 		transition: all 0.3s ease;
 		padding: 0.75rem 1.5rem;
 		border: 2px solid var(--primaryPink);
-		border-radius: 50px;
+		border-radius: var(--borderRadiusLarge);
 		background: linear-gradient(135deg, rgba(255, 20, 147, 0.1) 0%, rgba(255, 105, 180, 0.05) 100%);
 	}
 
@@ -101,7 +104,7 @@ import {INSTAGRAM_URL, SITE_TITLE, COLORS} from '../consts';
 	}
 
 	.footer-bottom {
-		max-width: 1200px;
+		max-width: var(--maxWidth);
 		margin: 0 auto;
 		text-align: center;
 		padding-top: 1.5rem;
@@ -110,7 +113,7 @@ import {INSTAGRAM_URL, SITE_TITLE, COLORS} from '../consts';
 		color: var(--orchid);
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: var(--mobileBreakpoint)) {
 		.footer-content {
 			flex-direction: column;
 			text-align: center;

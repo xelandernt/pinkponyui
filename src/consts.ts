@@ -23,6 +23,20 @@ export const COLORS = {
 	WHITE: '#fff',
 };
 
+// Layout Constants
+export const LAYOUT = {
+	MAX_CONTENT_WIDTH: '1200px',      // Maximum width for content containers
+	MOBILE_BREAKPOINT: '768px',        // Mobile breakpoint for responsive design
+	BORDER_RADIUS_SMALL: '15px',       // Small border radius for cards
+	BORDER_RADIUS_LARGE: '50px',       // Large border radius for buttons
+};
+
+// Animation Constants
+export const ANIMATION = {
+	BOUNCE_DURATION: '2s',             // Duration of bounce animation
+	TRANSITION_SPEED: '0.3s',          // Standard transition speed
+};
+
 // Physics constants for header letter animation
 // Gravity: Controls how fast letters fall (lower = slower, higher = faster)
 // Recommended range: 0.01 - 0.1
@@ -32,3 +46,12 @@ export const LETTER_GRAVITY = 0.01;
 // Larger values mean letters react to mouse from further away
 // Recommended range: 80 - 200
 export const MOUSE_PUSH_RADIUS = 150;
+
+// Additional physics constants
+export const PUSH_STRENGTH = 2;           // Force multiplier for push effect
+export const DAMPING = 0.99;              // Air resistance coefficient (0-1)
+export const ROTATION_FACTOR = 2;         // How much letters rotate based on velocity
+export const INITIAL_PUSH_MIN = -3;       // Minimum initial velocity
+export const INITIAL_PUSH_MAX = 3;        // Maximum initial velocity
+export const LETTER_RADIUS = 20;          // Collision radius for letters (pixels)
+export const COLLISION_DAMPING = 0.8;     // Energy loss on collision (0-1)
