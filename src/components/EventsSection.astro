@@ -46,30 +46,20 @@ import Event from './Event.astro';
 	/* Events Section */
 	.events-section {
 		padding: 4rem 2rem;
-		background: linear-gradient(180deg, rgba(26, 10, 26, 0.85) 0%, rgba(45, 27, 45, 0.85) 100%);
+		background: linear-gradient(180deg, 
+			rgba(0, 0, 0, 1) 0%, 
+			rgba(0, 0, 0, 1) 5%,
+			rgba(5, 2, 5, 1) 10%,
+			rgba(10, 4, 10, 1) 15%,
+			rgba(15, 6, 15, 0.98) 20%,
+			rgba(20, 8, 20, 0.95) 25%,
+			rgba(26, 10, 26, 0.90) 35%,
+			rgba(26, 10, 26, 0.85) 50%, 
+			rgba(45, 27, 45, 0.85) 100%
+		);
 		position: relative;
 		z-index: 2;
 		overflow: hidden;
-	}
-
-	/* Extended fade overlay to blend with hero section */
-	.events-section::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 300px;
-		background: linear-gradient(180deg, 
-			rgba(0, 0, 0, 1) 0%, 
-			rgba(0, 0, 0, 0.98) 15%,
-			rgba(0, 0, 0, 0.95) 30%,
-			rgba(0, 0, 0, 0.9) 50%,
-			rgba(0, 0, 0, 0.8) 70%,
-			transparent 100%
-		);
-		pointer-events: none;
-		z-index: 1;
 	}
 
 	.section-title {
@@ -78,8 +68,6 @@ import Event from './Event.astro';
 		color: var(--secondaryPink);
 		text-align: center;
 		margin-bottom: 3rem;
-		position: relative;
-		z-index: 2;
 	}
 
 	.events-container {
@@ -88,8 +76,6 @@ import Event from './Event.astro';
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 		gap: 2rem;
-		position: relative;
-		z-index: 2;
 	}
 
 	/* Hover effect: darken all cards when one is hovered */
