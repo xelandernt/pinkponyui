@@ -121,5 +121,57 @@ const renderedPosts = await Promise.all(
 				}
 			});
 		</script>
+
+		<script>
+			// Auto-hide scrollbar functionality
+			document.addEventListener('DOMContentLoaded', () => {
+				const pageWrapper = document.querySelector('.page-wrapper');
+				if (!pageWrapper) return;
+
+				let scrollTimeout;
+				let mouseTimeout;
+				const HIDE_DELAY = 1500; // Hide scrollbar after 1.5 seconds of inactivity
+				const EDGE_THRESHOLD = 30; // Show scrollbar when mouse is within 30px of right edge
+
+				// Initially hide the scrollbar
+				pageWrapper.classList.add('scrollbar-hidden');
+
+				// Show scrollbar
+				function showScrollbar() {
+					pageWrapper.classList.remove('scrollbar-hidden');
+				}
+
+				// Hide scrollbar with delay
+				function hideScrollbar() {
+					pageWrapper.classList.add('scrollbar-hidden');
+				}
+
+				// Show scrollbar on scroll and hide after delay
+				pageWrapper.addEventListener('scroll', () => {
+					showScrollbar();
+					clearTimeout(scrollTimeout);
+					scrollTimeout = setTimeout(hideScrollbar, HIDE_DELAY);
+				});
+
+				// Show scrollbar when hovering near right edge
+				document.addEventListener('mousemove', (e) => {
+					const distanceFromRight = window.innerWidth - e.clientX;
+					
+					if (distanceFromRight <= EDGE_THRESHOLD) {
+						showScrollbar();
+						clearTimeout(mouseTimeout);
+					} else {
+						clearTimeout(mouseTimeout);
+						mouseTimeout = setTimeout(hideScrollbar, HIDE_DELAY);
+					}
+				});
+
+				// Hide scrollbar when mouse leaves the window
+				document.addEventListener('mouseleave', () => {
+					clearTimeout(mouseTimeout);
+					mouseTimeout = setTimeout(hideScrollbar, HIDE_DELAY);
+				});
+			});
+		</script>
 	</body>
 </html>

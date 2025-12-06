@@ -25,20 +25,37 @@ body {
 }
 
 .page-wrapper::-webkit-scrollbar-track {
-	background: #1a0a1a;
+	background: rgba(26, 10, 26, 1);
+	transition: background 0.5s ease-out;
 }
 
 .page-wrapper::-webkit-scrollbar-thumb {
-	background: #ff1493;
+	background: rgba(255, 20, 147, 1);
 	border-radius: 6px;
+	transition: background 0.5s ease-out;
 }
 
 .page-wrapper::-webkit-scrollbar-thumb:hover {
-	background: #ff69b4;
+	background: rgba(255, 105, 180, 1);
 }
 
 /* Firefox scrollbar styling */
 .page-wrapper {
 	scrollbar-width: thin;
-	scrollbar-color: #ff1493 #1a0a1a;
+	scrollbar-color: rgba(255, 20, 147, 1) rgba(26, 10, 26, 1);
+	transition: scrollbar-color 0.5s ease-out;
+}
+
+/* Auto-hide scrollbar - fade out smoothly */
+.page-wrapper.scrollbar-hidden::-webkit-scrollbar-track {
+	background: rgba(26, 10, 26, 0);
+}
+
+.page-wrapper.scrollbar-hidden::-webkit-scrollbar-thumb {
+	background: rgba(255, 20, 147, 0);
+}
+
+/* For Firefox - fade using transparent colors */
+.page-wrapper.scrollbar-hidden {
+	scrollbar-color: rgba(255, 20, 147, 0) rgba(26, 10, 26, 0);
 }
