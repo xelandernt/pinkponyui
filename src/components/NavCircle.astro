@@ -111,6 +111,9 @@ const { position, href, text, color = COLORS.PRIMARY_PINK } = Astro.props;
 <script>
 	import { gsap } from 'gsap';
 
+	// Constant for overlay scale to ensure it covers the entire screen
+	const OVERLAY_SCALE = 15;
+
 	document.addEventListener('DOMContentLoaded', () => {
 		const navCircles = document.querySelectorAll('.nav-circle') as NodeListOf<HTMLElement>;
 		
@@ -138,9 +141,8 @@ const { position, href, text, color = COLORS.PRIMARY_PINK } = Astro.props;
 				// Add transitioning class to prevent hover effects during transition
 				navCircle.classList.add('transitioning');
 
-				// Get the circle's color from data attribute
-				const circleColor = navCircle.getAttribute('data-color');
-				if (!circleColor) return;
+				// Get the circle's color from data attribute, with fallback to pink
+				const circleColor = navCircle.getAttribute('data-color') || '#ff1493';
 
 				// Create a full-page overlay with the same color as the circle
 				const overlay = document.createElement('div');
@@ -161,7 +163,7 @@ const { position, href, text, color = COLORS.PRIMARY_PINK } = Astro.props;
 
 				// Animate the overlay to cover the page
 				gsap.to(overlay, {
-					scale: 10,
+					scale: OVERLAY_SCALE,
 					duration: 0.8,
 					ease: 'power2.inOut',
 					onComplete: () => {
