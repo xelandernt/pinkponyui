@@ -1,0 +1,141 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import BlogSection from '../components/BlogSection.astro';
+import NavCircle from '../components/NavCircle.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import { SITE_TITLE } from "../consts";
+import '../styles/index.css';
+
+// Get all blog posts from content collection and sort by order
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => (a.data.order ?? 0) - (b.data.order ?? 0));
+
+// Render all blog posts
+const renderedPosts = await Promise.all(
+	sortedPosts.map(async (post) => ({
+		...post,
+		Content: (await post.render()).Content
+	}))
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Blog - ${SITE_TITLE}`} description="Read the latest from Pink Pony Running Club" />
+	</head>
+	<body>
+		<div class="page-wrapper">
+			<NavCircle position="top-left" href="/" text="Home" />
+			<BlogSection renderedPosts={renderedPosts} />
+			<Footer />
+		</div>
+
+		<script>
+			import { gsap } from 'gsap';
+
+			document.addEventListener('DOMContentLoaded', () => {
+				// Animate blog entries sliding in from alternating sides
+				const blogEntries = document.querySelectorAll('.blog-entry-wrapper');
+				
+				blogEntries.forEach((entry, index) => {
+					const fromLeft = index % 2 === 0;
+					const delay = index * 0.2;
+					
+					gsap.fromTo(entry,
+						{
+							x: fromLeft ? '-100%' : '100%',
+							opacity: 0
+						},
+						{
+							x: '0%',
+							opacity: 1,
+							duration: 0.8,
+							delay: delay,
+							ease: 'power2.out'
+						}
+					);
+				});
+
+				// Add click handlers for expanding/collapsing blog entries
+				const blogCards = document.querySelectorAll('.blog-entry');
+				let expandedCard = null;
+
+				blogCards.forEach((card) => {
+					card.addEventListener('click', () => {
+						const isExpanded = card.getAttribute('data-expanded') === 'true';
+						
+						// Collapse previously expanded card
+						if (expandedCard && expandedCard !== card) {
+							expandedCard.setAttribute('data-expanded', 'false');
+							gsap.to(expandedCard, {
+								scale: 1,
+								duration: 0.3,
+								ease: 'power2.out'
+							});
+						}
+
+						// Toggle current card
+						if (isExpanded) {
+							card.setAttribute('data-expanded', 'false');
+							gsap.to(card, {
+								scale: 1,
+								duration: 0.3,
+								ease: 'power2.out'
+							});
+							expandedCard = null;
+						} else {
+							card.setAttribute('data-expanded', 'true');
+							expandedCard = card;
+							
+							// Scroll the card into view and expand it
+							gsap.to(card, {
+								scale: 1,
+								duration: 0.3,
+								ease: 'power2.out',
+								onComplete: () => {
+									// Smooth scroll to the card
+									card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+								}
+							});
+						}
+					});
+				});
+
+				// Add hover effect for blog entries
+				const blogContainer = document.querySelector('.blog-container');
+				
+				if (blogContainer) {
+					blogCards.forEach((card) => {
+						card.addEventListener('mouseenter', () => {
+							const isExpanded = card.getAttribute('data-expanded') === 'true';
+							
+							if (!isExpanded) {
+								gsap.to(card, {
+									scale: 1.02,
+									y: -5,
+									duration: 0.3,
+									ease: 'power2.out'
+								});
+							}
+						});
+						
+						card.addEventListener('mouseleave', () => {
+							const isExpanded = card.getAttribute('data-expanded') === 'true';
+							
+							if (!isExpanded) {
+								gsap.to(card, {
+									scale: 1,
+									y: 0,
+									duration: 0.3,
+									ease: 'power2.out'
+								});
+							}
+						});
+					});
+				}
+			});
+		</script>
+	</body>
+</html>

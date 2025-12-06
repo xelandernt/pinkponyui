@@ -1,0 +1,156 @@
+---
+import { COLORS, LAYOUT, ANIMATION } from '../consts';
+
+interface Props {
+	title: string;
+	date: string;
+	author: string;
+	excerpt: string;
+	isExpanded?: boolean;
+}
+
+const { title, date, author, excerpt, isExpanded = false } = Astro.props;
+---
+
+<article class="blog-entry" data-expanded={isExpanded ? "true" : "false"}>
+	<div class="blog-header">
+		<h3 class="blog-title">{title}</h3>
+		<div class="blog-meta">
+			<p class="blog-date">📅 {date}</p>
+			<p class="blog-author">✍️ {author}</p>
+		</div>
+		<p class="blog-excerpt">{excerpt}</p>
+	</div>
+	<div class="blog-content">
+		<slot />
+	</div>
+</article>
+
+<style define:vars={{ 
+	darkerPurple: COLORS.DARKER_PURPLE, 
+	darkPurple: COLORS.DARK_PURPLE,
+	primaryPink: COLORS.PRIMARY_PINK,
+	secondaryPink: COLORS.SECONDARY_PINK,
+	lightPink: COLORS.LIGHT_PINK,
+	orchid: COLORS.ORCHID,
+	borderRadius: LAYOUT.BORDER_RADIUS_SMALL,
+	transitionSpeed: ANIMATION.TRANSITION_SPEED
+}}>
+	.blog-entry {
+		background: linear-gradient(135deg, var(--darkerPurple) 0%, var(--darkPurple) 100%);
+		border: 2px solid var(--primaryPink);
+		border-radius: var(--borderRadius);
+		padding: 2rem;
+		transition: all var(--transitionSpeed) ease;
+		position: relative;
+		overflow: hidden;
+		cursor: pointer;
+	}
+
+	.blog-header {
+		position: relative;
+		z-index: 1;
+	}
+
+	.blog-title {
+		font-family: "Lobster", cursive;
+		font-size: 2rem;
+		color: var(--secondaryPink);
+		margin-bottom: 1rem;
+	}
+
+	.blog-meta {
+		margin-bottom: 1rem;
+		display: flex;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+	}
+
+	.blog-date,
+	.blog-author {
+		color: var(--orchid);
+		font-size: 0.9rem;
+		margin: 0;
+	}
+
+	.blog-excerpt {
+		color: var(--lightPink);
+		font-style: italic;
+		margin-bottom: 1rem;
+	}
+
+	.blog-content {
+		color: var(--lightPink);
+		line-height: 1.6;
+		font-size: 1rem;
+		max-height: 0;
+		overflow: hidden;
+		opacity: 0;
+		transition: all 0.5s ease;
+		margin-top: 0;
+	}
+
+	.blog-entry[data-expanded="true"] .blog-content {
+		max-height: 2000px;
+		opacity: 1;
+		margin-top: 1rem;
+	}
+
+	.blog-content :global(h2) {
+		font-family: "Lobster", cursive;
+		color: var(--secondaryPink);
+		font-size: 1.5rem;
+		margin-top: 1.5rem;
+		margin-bottom: 0.75rem;
+	}
+
+	.blog-content :global(h3) {
+		font-family: "Lobster", cursive;
+		color: var(--orchid);
+		font-size: 1.25rem;
+		margin-top: 1.25rem;
+		margin-bottom: 0.5rem;
+	}
+
+	.blog-content :global(strong) {
+		color: var(--secondaryPink);
+		font-weight: 600;
+	}
+
+	.blog-content :global(em) {
+		color: var(--orchid);
+		font-style: italic;
+	}
+
+	.blog-content :global(a) {
+		color: var(--secondaryPink);
+		text-decoration: underline;
+		transition: color var(--transitionSpeed) ease;
+	}
+
+	.blog-content :global(a:hover) {
+		color: var(--primaryPink);
+	}
+
+	.blog-content :global(p) {
+		margin: 0.75rem 0;
+	}
+
+	.blog-content :global(ul),
+	.blog-content :global(ol) {
+		margin: 0.75rem 0;
+		padding-left: 1.5rem;
+		color: var(--lightPink);
+	}
+
+	.blog-content :global(li) {
+		margin: 0.5rem 0;
+	}
+
+	.blog-content :global(img) {
+		max-width: 100%;
+		height: auto;
+		border-radius: 10px;
+		margin: 1rem 0;
+	}
+</style>
