@@ -1,9 +1,5 @@
 ---
-interface Props {
-	title: string;
-}
-
-const { title } = Astro.props;
+import { COLORS } from '../consts';
 ---
 
 <section class="hero">
@@ -20,11 +16,11 @@ const { title } = Astro.props;
 	</div>
 </section>
 
-<style>
+<style define:vars={{ primaryPink: COLORS.PRIMARY_PINK, black: COLORS.BLACK }}>
 	/* Hero Section */
 	.hero {
 		height: 100vh;
-		background: #000;
+		background: var(--black);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -43,7 +39,7 @@ const { title } = Astro.props;
 	.hero-title {
 		font-family: "Lobster", cursive;
 		font-size: clamp(3rem, 10vw, 8rem);
-		color: #ff1493;
+		color: var(--primaryPink);
 		font-weight: 400;
 		line-height: 1.2;
 		margin: 0;
@@ -66,8 +62,8 @@ const { title } = Astro.props;
 	.arrow-down {
 		width: 30px;
 		height: 30px;
-		border-left: 3px solid #ff1493;
-		border-bottom: 3px solid #ff1493;
+		border-left: 3px solid var(--primaryPink);
+		border-bottom: 3px solid var(--primaryPink);
 		transform: rotate(-45deg);
 		animation: bounce 2s infinite;
 		position: relative;

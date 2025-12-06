@@ -1,4 +1,6 @@
 ---
+import { COLORS } from '../consts';
+
 interface Props {
 	title: string;
 	when: string;
@@ -19,10 +21,17 @@ const { title, when, where } = Astro.props;
 	</div>
 </article>
 
-<style>
+<style define:vars={{ 
+	darkerPurple: COLORS.DARKER_PURPLE, 
+	darkPurple: COLORS.DARK_PURPLE,
+	primaryPink: COLORS.PRIMARY_PINK,
+	secondaryPink: COLORS.SECONDARY_PINK,
+	lightPink: COLORS.LIGHT_PINK,
+	orchid: COLORS.ORCHID
+}}>
 	.event-card {
-		background: linear-gradient(135deg, #2d1b2d 0%, #1a0a1a 100%);
-		border: 2px solid #ff1493;
+		background: linear-gradient(135deg, var(--darkerPurple) 0%, var(--darkPurple) 100%);
+		border: 2px solid var(--primaryPink);
 		border-radius: 15px;
 		padding: 2rem;
 		transition: all 0.3s ease;
@@ -33,7 +42,7 @@ const { title, when, where } = Astro.props;
 	.event-title {
 		font-family: "Lobster", cursive;
 		font-size: 2rem;
-		color: #ff69b4;
+		color: var(--secondaryPink);
 		margin-bottom: 1rem;
 	}
 
@@ -43,35 +52,35 @@ const { title, when, where } = Astro.props;
 
 	.event-when,
 	.event-where {
-		color: #da70d6;
+		color: var(--orchid);
 		font-size: 1rem;
 		margin: 0.5rem 0;
 	}
 
 	.event-description {
-		color: #e6b3e6;
+		color: var(--lightPink);
 		line-height: 1.6;
 		font-size: 1rem;
 	}
 
 	.event-description :global(strong) {
-		color: #ff69b4;
+		color: var(--secondaryPink);
 		font-weight: 600;
 	}
 
 	.event-description :global(em) {
-		color: #da70d6;
+		color: var(--orchid);
 		font-style: italic;
 	}
 
 	.event-description :global(a) {
-		color: #ff69b4;
+		color: var(--secondaryPink);
 		text-decoration: underline;
 		transition: color 0.2s ease;
 	}
 
 	.event-description :global(a:hover) {
-		color: #ff1493;
+		color: var(--primaryPink);
 	}
 
 	.event-description :global(p) {

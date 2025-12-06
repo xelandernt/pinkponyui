@@ -1,6 +1,17 @@
 ---
+import { COLORS } from '../consts';
+
+interface RenderedEvent {
+	data: {
+		title: string;
+		when: string;
+		where: string;
+	};
+	Content: any;
+}
+
 interface Props {
-	renderedEvents: any[];
+	renderedEvents: RenderedEvent[];
 }
 
 const { renderedEvents } = Astro.props;
@@ -26,7 +37,7 @@ import Event from './Event.astro';
 	</div>
 </section>
 
-<style>
+<style define:vars={{ secondaryPink: COLORS.SECONDARY_PINK, primaryPink: COLORS.PRIMARY_PINK }}>
 	/* Events Section */
 	.events-section {
 		padding: 4rem 2rem;
@@ -39,7 +50,7 @@ import Event from './Event.astro';
 	.section-title {
 		font-family: "Lobster", cursive;
 		font-size: clamp(2.5rem, 6vw, 5rem);
-		color: #ff69b4;
+		color: var(--secondaryPink);
 		text-align: center;
 		margin-bottom: 3rem;
 	}
