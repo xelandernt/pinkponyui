@@ -44,6 +44,7 @@ import BlogEntry from './BlogEntry.astro';
 <style define:vars={{ 
 	secondaryPink: COLORS.SECONDARY_PINK, 
 	primaryPink: COLORS.PRIMARY_PINK,
+	white: COLORS.WHITE,
 	maxWidth: LAYOUT.MAX_CONTENT_WIDTH,
 	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT
 }}>
@@ -59,7 +60,7 @@ import BlogEntry from './BlogEntry.astro';
 	.section-title {
 		font-family: "Lobster", cursive;
 		font-size: clamp(2.5rem, 6vw, 5rem);
-		color: #fff;
+		color: var(--white);
 		text-align: center;
 		margin-bottom: 3rem;
 		text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
