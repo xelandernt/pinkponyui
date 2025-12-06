@@ -69,36 +69,20 @@ const renderedPosts = await Promise.all(
 						// Collapse previously expanded card
 						if (expandedCard && expandedCard !== card) {
 							expandedCard.setAttribute('data-expanded', 'false');
-							gsap.to(expandedCard, {
-								scale: 1,
-								duration: 0.3,
-								ease: 'power2.out'
-							});
 						}
 
 						// Toggle current card
 						if (isExpanded) {
 							card.setAttribute('data-expanded', 'false');
-							gsap.to(card, {
-								scale: 1,
-								duration: 0.3,
-								ease: 'power2.out'
-							});
 							expandedCard = null;
 						} else {
 							card.setAttribute('data-expanded', 'true');
 							expandedCard = card;
 							
-							// Scroll the card into view and expand it
-							gsap.to(card, {
-								scale: 1,
-								duration: 0.3,
-								ease: 'power2.out',
-								onComplete: () => {
-									// Smooth scroll to the card
-									card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-								}
-							});
+							// Scroll the card into view after a brief delay to allow content to expand
+							setTimeout(() => {
+								card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+							}, 100);
 						}
 					});
 				});
