@@ -34,7 +34,7 @@ const { position, href, text } = Astro.props;
 			{/* For top-left (Home): position at 135% (wraps around to bottom-right) */}
 			<textPath 
 				href={`#circlePath-${position}`} 
-				startOffset={position === 'top-right' ? '37.5%' : '37.5%'}
+				startOffset={position === 'top-right' ? '62.5%' : '135%'}
 				text-anchor="middle"
 			>
 				{text}
