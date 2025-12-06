@@ -34,12 +34,14 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 	secondaryPink: COLORS.SECONDARY_PINK,
 	lightPink: COLORS.LIGHT_PINK,
 	orchid: COLORS.ORCHID,
+	black: COLORS.BLACK,
+	whiteTranslucent: COLORS.WHITE_TRANSLUCENT,
 	borderRadius: LAYOUT.BORDER_RADIUS_SMALL,
 	transitionSpeed: ANIMATION.TRANSITION_SPEED
 }}>
 	.blog-entry {
-		background: rgba(255, 255, 255, 0.95);
-		border: 3px solid #000;
+		background: var(--whiteTranslucent);
+		border: 3px solid var(--black);
 		border-radius: var(--borderRadius);
 		padding: 2rem;
 		transition: all var(--transitionSpeed) ease;

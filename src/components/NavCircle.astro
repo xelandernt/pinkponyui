@@ -112,61 +112,63 @@ const { position, href, text, color = COLORS.PRIMARY_PINK } = Astro.props;
 	import { gsap } from 'gsap';
 
 	document.addEventListener('DOMContentLoaded', () => {
-		const navCircle = document.querySelector('.nav-circle') as HTMLElement;
-		if (!navCircle) return;
+		const navCircles = document.querySelectorAll('.nav-circle') as NodeListOf<HTMLElement>;
+		
+		navCircles.forEach((navCircle) => {
+			// Entry animation: hidden -> expand -> normal
+			gsap.timeline({ delay: 0.5 })
+				.to(navCircle, {
+					opacity: 1,
+					scale: 1.5,
+					duration: 0.4,
+					ease: 'back.out(2)'
+				})
+				.to(navCircle, {
+					scale: 1,
+					duration: 0.3,
+					ease: 'power2.inOut'
+				});
 
-		// Entry animation: hidden -> expand -> normal
-		gsap.timeline({ delay: 0.5 })
-			.to(navCircle, {
-				opacity: 1,
-				scale: 1.5,
-				duration: 0.4,
-				ease: 'back.out(2)'
-			})
-			.to(navCircle, {
-				scale: 1,
-				duration: 0.3,
-				ease: 'power2.inOut'
-			});
+			// Page transition animation on click
+			navCircle.addEventListener('click', (e) => {
+				e.preventDefault();
+				const href = navCircle.getAttribute('href');
+				if (!href) return;
 
-		// Page transition animation on click
-		navCircle.addEventListener('click', (e) => {
-			e.preventDefault();
-			const href = navCircle.getAttribute('href');
-			if (!href) return;
+				// Add transitioning class to prevent hover effects during transition
+				navCircle.classList.add('transitioning');
 
-			// Add transitioning class to prevent hover effects during transition
-			navCircle.classList.add('transitioning');
+				// Get the circle's color from data attribute
+				const circleColor = navCircle.getAttribute('data-color');
+				if (!circleColor) return;
 
-			// Get the circle's color from data attribute
-			const circleColor = navCircle.getAttribute('data-color') || '#ff1493';
+				// Create a full-page overlay with the same color as the circle
+				const overlay = document.createElement('div');
+				overlay.style.position = 'fixed';
+				overlay.style.top = '0';
+				overlay.style.left = '0';
+				overlay.style.width = '100%';
+				overlay.style.height = '100%';
+				overlay.style.backgroundColor = circleColor;
+				overlay.style.transformOrigin = navCircle.classList.contains('top-right') 
+					? 'top right' 
+					: 'top left';
+				overlay.style.transform = 'scale(0)';
+				overlay.style.borderRadius = '50%';
+				overlay.style.zIndex = '9999';
+				overlay.style.pointerEvents = 'none';
+				document.body.appendChild(overlay);
 
-			// Create a full-page overlay with the same color as the circle
-			const overlay = document.createElement('div');
-			overlay.style.position = 'fixed';
-			overlay.style.top = '0';
-			overlay.style.left = '0';
-			overlay.style.width = '100%';
-			overlay.style.height = '100%';
-			overlay.style.backgroundColor = circleColor;
-			overlay.style.transformOrigin = navCircle.classList.contains('top-right') 
-				? 'top right' 
-				: 'top left';
-			overlay.style.transform = 'scale(0)';
-			overlay.style.borderRadius = '50%';
-			overlay.style.zIndex = '9999';
-			overlay.style.pointerEvents = 'none';
-			document.body.appendChild(overlay);
-
-			// Animate the overlay to cover the page
-			gsap.to(overlay, {
-				scale: 10,
-				duration: 0.8,
-				ease: 'power2.inOut',
-				onComplete: () => {
-					// Navigate to the new page
-					window.location.href = href;
-				}
+				// Animate the overlay to cover the page
+				gsap.to(overlay, {
+					scale: 10,
+					duration: 0.8,
+					ease: 'power2.inOut',
+					onComplete: () => {
+						// Navigate to the new page
+						window.location.href = href;
+					}
+				});
 			});
 		});
 	});

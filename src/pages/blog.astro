@@ -24,9 +24,9 @@ const renderedPosts = await Promise.all(
 <html lang="en">
 	<head>
 		<BaseHead title={`Blog - ${SITE_TITLE}`} description="Read the latest from Pink Pony Running Club" />
-		<style>
+		<style define:vars={{ primaryPink: COLORS.PRIMARY_PINK }}>
 			body.blog-page {
-				background: #ff1493;
+				background: var(--primaryPink);
 			}
 		</style>
 	</head>
