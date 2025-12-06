@@ -13,24 +13,21 @@ const { position, href, text } = Astro.props;
 <a href={href} class={`nav-circle ${position}`}>
 	<svg class="circle-svg" viewBox="0 0 200 200">
 		<defs>
-			{/* Path for bottom-right (top-right position - Blog) - longer arc in visible quadrant */}
-			{position === 'top-right' && (
-				<path 
-					id={`circlePath-${position}`}
-					d="M 175,100 A 75,75 0 0,1 100,175"
-				/>
-			)}
-			{/* Path for bottom-left (top-left position - Home) - longer arc in visible quadrant */}
-			{position === 'top-left' && (
-				<path 
-					id={`circlePath-${position}`}
-					d="M 100,175 A 75,75 0 0,1 25,100"
-				/>
-			)}
+			{/* Single circular path for text to follow */}
+			<path 
+				id={`circlePath-${position}`}
+				d="M 100,25 A 75,75 0 1,1 100,175 A 75,75 0 1,1 100,25"
+			/>
 		</defs>
 		<circle cx="100" cy="100" r="100" fill={COLORS.PRIMARY_PINK} />
 		<text class="nav-text">
-			<textPath href={`#circlePath-${position}`} startOffset="50%" text-anchor="middle">
+			{/* For top-right (Blog): position text at bottom-right of circle (around 315 degrees / 87.5% of path) */}
+			{/* For top-left (Home): position text at bottom-left of circle (around 225 degrees / 62.5% of path) */}
+			<textPath 
+				href={`#circlePath-${position}`} 
+				startOffset={position === 'top-right' ? '87.5%' : '62.5%'} 
+				text-anchor="middle"
+			>
 				{text}
 			</textPath>
 		</text>
