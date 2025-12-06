@@ -1,0 +1,101 @@
+---
+import { COLORS, BLOG_NAV_CIRCLE_SIZE, BLOG_NAV_CIRCLE_EXPANDED_SIZE, BLOG_NAV_TRANSITION_DURATION } from '../consts';
+
+interface Props {
+	position: 'top-right' | 'top-left';
+	href: string;
+	text: string;
+}
+
+const { position, href, text } = Astro.props;
+---
+
+<a href={href} class={`nav-circle ${position}`}>
+	<svg class="circle-svg" viewBox="0 0 200 200">
+		<defs>
+			{/* Path for Blog (top-right) - reversed direction for upside-down text */}
+			{position === 'top-right' && (
+				<path 
+					id={`circlePath-${position}`}
+					d="M 100,25 A 75,75 0 1,0 100,175 A 75,75 0 1,0 100,25"
+				/>
+			)}
+			{/* Path for Home (top-left) - normal direction */}
+			{position === 'top-left' && (
+				<path 
+					id={`circlePath-${position}`}
+					d="M 100,25 A 75,75 0 1,0 100,175 A 75,75 0 1,0 100,25"
+				/>
+			)}
+		</defs>
+		<circle cx="100" cy="100" r="100" fill={COLORS.PRIMARY_PINK} />
+		<text class="nav-text">
+			{/* For top-right (Blog): position at 62.5% with reversed path (flipped text) */}
+			{/* For top-left (Home): position at 135% (wraps around to bottom-right) */}
+			<textPath 
+				href={`#circlePath-${position}`} 
+				startOffset={position === 'top-right' ? '37.5%' : '62.5%'}
+				text-anchor="middle"
+			>
+				{text}
+			</textPath>
+		</text>
+	</svg>
+</a>
+
+<style define:vars={{ 
+	primaryPink: COLORS.PRIMARY_PINK,
+	white: COLORS.WHITE,
+	circleSize: BLOG_NAV_CIRCLE_SIZE + 'px',
+	expandedSize: BLOG_NAV_CIRCLE_EXPANDED_SIZE + 'px',
+	transitionDuration: BLOG_NAV_TRANSITION_DURATION
+}}>
+	.nav-circle {
+		position: fixed;
+		width: var(--circleSize);
+		height: var(--circleSize);
+		z-index: 1000;
+		cursor: pointer;
+		transition: all var(--transitionDuration) ease;
+		display: block;
+		text-decoration: none;
+	}
+
+	.nav-circle.top-right {
+		top: calc(var(--circleSize) / -2);
+		right: calc(var(--circleSize) / -2 + 12px); /* Account for 12px scrollbar width */
+	}
+
+	.nav-circle.top-left {
+		top: calc(var(--circleSize) / -2);
+		left: calc(var(--circleSize) / -2);
+	}
+
+	.nav-circle:hover {
+		width: var(--expandedSize);
+		height: var(--expandedSize);
+	}
+
+	.nav-circle.top-right:hover {
+		top: calc(var(--expandedSize) / -2);
+		right: calc(var(--expandedSize) / -2 + 12px); /* Account for 12px scrollbar width */
+	}
+
+	.nav-circle.top-left:hover {
+		top: calc(var(--expandedSize) / -2);
+		left: calc(var(--expandedSize) / -2);
+	}
+
+	.circle-svg {
+		width: 100%;
+		height: 100%;
+	}
+
+	.nav-text {
+		fill: var(--white);
+		font-family: "Lobster", cursive;
+		font-size: 28px;
+		font-weight: bold;
+		letter-spacing: 2px;
+	}
+</style>

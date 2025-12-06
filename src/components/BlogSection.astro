@@ -1,0 +1,92 @@
+---
+import { COLORS, LAYOUT } from '../consts';
+
+interface RenderedBlogPost {
+	data: {
+		title: string;
+		date: string;
+		author: string;
+		excerpt: string;
+	};
+	Content: any;
+}
+
+interface Props {
+	renderedPosts: RenderedBlogPost[];
+}
+
+const { renderedPosts } = Astro.props;
+
+import BlogEntry from './BlogEntry.astro';
+---
+
+<section class="blog-section">
+	<h2 class="section-title">Blog</h2>
+	<div class="blog-container">
+		{renderedPosts.map((post, index) => {
+			const { Content } = post;
+			return (
+				<div class="blog-entry-wrapper" data-index={index}>
+					<BlogEntry 
+						title={post.data.title}
+						date={post.data.date}
+						author={post.data.author}
+						excerpt={post.data.excerpt}
+					>
+						<Content />
+					</BlogEntry>
+				</div>
+			);
+		})}
+	</div>
+</section>
+
+<style define:vars={{ 
+	secondaryPink: COLORS.SECONDARY_PINK, 
+	primaryPink: COLORS.PRIMARY_PINK,
+	maxWidth: LAYOUT.MAX_CONTENT_WIDTH,
+	mobileBreakpoint: LAYOUT.MOBILE_BREAKPOINT
+}}>
+	.blog-section {
+		padding: 4rem 2rem;
+		background: linear-gradient(180deg, rgba(0, 0, 0, 0.85) 0%, rgba(26, 10, 26, 0.85) 50%, rgba(45, 27, 45, 0.85) 100%);
+		position: relative;
+		z-index: 2;
+		overflow: hidden;
+		min-height: 100vh;
+	}
+
+	.section-title {
+		font-family: "Lobster", cursive;
+		font-size: clamp(2.5rem, 6vw, 5rem);
+		color: var(--secondaryPink);
+		text-align: center;
+		margin-bottom: 3rem;
+	}
+
+	.blog-container {
+		max-width: var(--maxWidth);
+		margin: 0 auto;
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+
+	.blog-entry-wrapper {
+		opacity: 0;
+		transform: translateX(-100%);
+	}
+
+	.blog-entry-wrapper[data-index="1"],
+	.blog-entry-wrapper[data-index="3"],
+	.blog-entry-wrapper[data-index="5"],
+	.blog-entry-wrapper[data-index="7"] {
+		transform: translateX(100%);
+	}
+
+	@media (max-width: var(--mobileBreakpoint)) {
+		.blog-section {
+			padding: 3rem 1rem;
+		}
+	}
+</style>

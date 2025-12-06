@@ -55,3 +55,8 @@ export const INITIAL_PUSH_MIN = -3;       // Minimum initial velocity
 export const INITIAL_PUSH_MAX = 3;        // Maximum initial velocity
 export const LETTER_RADIUS = 20;          // Collision radius for letters (pixels)
 export const COLLISION_DAMPING = 0.8;     // Energy loss on collision (0-1)
+
+// Blog Navigation Constants
+export const BLOG_NAV_CIRCLE_SIZE = 200;           // Size of the navigation circle (in pixels)
+export const BLOG_NAV_CIRCLE_EXPANDED_SIZE = 250;  // Size when hovered (in pixels)
+export const BLOG_NAV_TRANSITION_DURATION = '0.3s'; // Transition duration for hover effect
