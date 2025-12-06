@@ -43,6 +43,7 @@ body {
 .page-wrapper {
 	scrollbar-width: thin;
 	scrollbar-color: rgba(255, 20, 147, 1) rgba(26, 10, 26, 1);
+	transition: scrollbar-color 0.5s ease-out;
 }
 
 /* Auto-hide scrollbar - fade out smoothly */
