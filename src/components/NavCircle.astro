@@ -5,12 +5,13 @@ interface Props {
 	position: 'top-right' | 'top-left';
 	href: string;
 	text: string;
+	color?: string;
 }
 
-const { position, href, text } = Astro.props;
+const { position, href, text, color = COLORS.PRIMARY_PINK } = Astro.props;
 ---
 
-<a href={href} class={`nav-circle ${position}`}>
+<a href={href} class={`nav-circle ${position}`} data-color={color}>
 	<svg class="circle-svg" viewBox="0 0 200 200">
 		<defs>
 			{/* Path for Blog (top-right) - reversed direction for upside-down text */}
@@ -28,7 +29,7 @@ const { position, href, text } = Astro.props;
 				/>
 			)}
 		</defs>
-		<circle cx="100" cy="100" r="100" fill={COLORS.PRIMARY_PINK} />
+		<circle cx="100" cy="100" r="100" fill={color} />
 		<text class="nav-text">
 			{/* For top-right (Blog): position at 62.5% with reversed path (flipped text) */}
 			{/* For top-left (Home): position at 135% (wraps around to bottom-right) */}
@@ -59,6 +60,8 @@ const { position, href, text } = Astro.props;
 		transition: all var(--transitionDuration) ease;
 		display: block;
 		text-decoration: none;
+		opacity: 0;
+		transform: scale(0);
 	}
 
 	.nav-circle.top-right {
@@ -98,4 +101,77 @@ const { position, href, text } = Astro.props;
 		font-weight: bold;
 		letter-spacing: 2px;
 	}
+
+	/* Transition overlay for page transitions */
+	.nav-circle.transitioning {
+		pointer-events: none;
+	}
 </style>
+
+<script>
+	import { gsap } from 'gsap';
+
+	// Constant for overlay scale to ensure it covers the entire screen
+	const OVERLAY_SCALE = 15;
+
+	document.addEventListener('DOMContentLoaded', () => {
+		const navCircles = document.querySelectorAll('.nav-circle') as NodeListOf<HTMLElement>;
+		
+		navCircles.forEach((navCircle) => {
+			// Entry animation: hidden -> expand -> normal
+			gsap.timeline({ delay: 0.5 })
+				.to(navCircle, {
+					opacity: 1,
+					scale: 1.5,
+					duration: 0.4,
+					ease: 'back.out(2)'
+				})
+				.to(navCircle, {
+					scale: 1,
+					duration: 0.3,
+					ease: 'power2.inOut'
+				});
+
+			// Page transition animation on click
+			navCircle.addEventListener('click', (e) => {
+				e.preventDefault();
+				const href = navCircle.getAttribute('href');
+				if (!href) return;
+
+				// Add transitioning class to prevent hover effects during transition
+				navCircle.classList.add('transitioning');
+
+				// Get the circle's color from data attribute, with fallback to pink
+				const circleColor = navCircle.getAttribute('data-color') || '#ff1493';
+
+				// Create a full-page overlay with the same color as the circle
+				const overlay = document.createElement('div');
+				overlay.style.position = 'fixed';
+				overlay.style.top = '0';
+				overlay.style.left = '0';
+				overlay.style.width = '100%';
+				overlay.style.height = '100%';
+				overlay.style.backgroundColor = circleColor;
+				overlay.style.transformOrigin = navCircle.classList.contains('top-right') 
+					? 'top right' 
+					: 'top left';
+				overlay.style.transform = 'scale(0)';
+				overlay.style.borderRadius = '50%';
+				overlay.style.zIndex = '9999';
+				overlay.style.pointerEvents = 'none';
+				document.body.appendChild(overlay);
+
+				// Animate the overlay to cover the page
+				gsap.to(overlay, {
+					scale: OVERLAY_SCALE,
+					duration: 0.8,
+					ease: 'power2.inOut',
+					onComplete: () => {
+						// Navigate to the new page
+						window.location.href = href;
+					}
+				});
+			});
+		});
+	});
+</script>

@@ -4,7 +4,7 @@ import BlogSection from '../components/BlogSection.astro';
 import NavCircle from '../components/NavCircle.astro';
 import Footer from '../components/Footer.astro';
 import { getCollection } from 'astro:content';
-import { SITE_TITLE } from "../consts";
+import { SITE_TITLE, COLORS } from "../consts";
 import '../styles/index.css';
 
 // Get all blog posts from content collection and sort by order
@@ -24,10 +24,15 @@ const renderedPosts = await Promise.all(
 <html lang="en">
 	<head>
 		<BaseHead title={`Blog - ${SITE_TITLE}`} description="Read the latest from Pink Pony Running Club" />
+		<style define:vars={{ primaryPink: COLORS.PRIMARY_PINK }}>
+			body.blog-page {
+				background: var(--primaryPink);
+			}
+		</style>
 	</head>
-	<body>
+	<body class="blog-page">
 		<div class="page-wrapper">
-			<NavCircle position="top-left" href="/" text="Home" />
+			<NavCircle position="top-left" href="/" text="Home" color={COLORS.BLACK} />
 			<BlogSection renderedPosts={renderedPosts} />
 			<Footer />
 		</div>

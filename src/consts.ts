@@ -21,6 +21,7 @@ export const COLORS = {
 	
 	// Text colors
 	WHITE: '#fff',
+	WHITE_TRANSLUCENT: 'rgba(255, 255, 255, 0.95)',
 };
 
 // Layout Constants
