@@ -20,6 +20,7 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 			<p class="blog-author">✍️ {author}</p>
 		</div>
 		<p class="blog-excerpt">{excerpt}</p>
+		<div class="expand-indicator">Click to read more ▼</div>
 	</div>
 	<div class="blog-content">
 		<slot />
@@ -77,6 +78,26 @@ const { title, date, author, excerpt, isExpanded = false } = Astro.props;
 		color: var(--lightPink);
 		font-style: italic;
 		margin-bottom: 1rem;
+	}
+
+	.expand-indicator {
+		color: var(--secondaryPink);
+		font-size: 0.9rem;
+		font-weight: bold;
+		opacity: 0;
+		transform: translateY(-10px);
+		transition: all 0.3s ease;
+		margin-top: 0.5rem;
+	}
+
+	.blog-entry:hover .expand-indicator {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
+	.blog-entry[data-expanded="true"] .expand-indicator {
+		opacity: 0;
+		display: none;
 	}
 
 	.blog-content {

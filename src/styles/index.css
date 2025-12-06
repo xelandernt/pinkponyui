@@ -18,3 +18,27 @@ body {
 	overflow-y: auto;
 	overflow-x: clip;
 }
+
+/* Pink scrollbar styling */
+.page-wrapper::-webkit-scrollbar {
+	width: 12px;
+}
+
+.page-wrapper::-webkit-scrollbar-track {
+	background: #1a0a1a;
+}
+
+.page-wrapper::-webkit-scrollbar-thumb {
+	background: #ff1493;
+	border-radius: 6px;
+}
+
+.page-wrapper::-webkit-scrollbar-thumb:hover {
+	background: #ff69b4;
+}
+
+/* Firefox scrollbar styling */
+.page-wrapper {
+	scrollbar-width: thin;
+	scrollbar-color: #ff1493 #1a0a1a;
+}

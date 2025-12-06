@@ -13,18 +13,18 @@ const { position, href, text } = Astro.props;
 <a href={href} class={`nav-circle ${position}`}>
 	<svg class="circle-svg" viewBox="0 0 200 200">
 		<defs>
-			{/* Path for bottom-right (top-right position - Blog) - text reads along bottom-right arc */}
+			{/* Path for bottom-right (top-right position - Blog) - text along visible bottom-right quadrant */}
 			{position === 'top-right' && (
 				<path 
 					id={`circlePath-${position}`}
-					d="M 100, 100 m -75, 0 a 75,75 0 0,0 150,0"
+					d="M 145,155 A 75,75 0 0,0 155,145"
 				/>
 			)}
-			{/* Path for bottom-left (top-left position - Home) - text reads along bottom-left arc */}
+			{/* Path for bottom-left (top-left position - Home) - text along visible bottom-left quadrant, reversed */}
 			{position === 'top-left' && (
 				<path 
 					id={`circlePath-${position}`}
-					d="M 100, 100 m 75, 0 a 75,75 0 0,1 -150,0"
+					d="M 45,145 A 75,75 0 0,0 55,155"
 				/>
 			)}
 		</defs>
@@ -57,7 +57,7 @@ const { position, href, text } = Astro.props;
 
 	.nav-circle.top-right {
 		top: calc(var(--circleSize) / -2);
-		right: calc(var(--circleSize) / -2);
+		right: calc(var(--circleSize) / -2 + 12px); /* Account for 12px scrollbar width */
 	}
 
 	.nav-circle.top-left {
@@ -72,7 +72,7 @@ const { position, href, text } = Astro.props;
 
 	.nav-circle.top-right:hover {
 		top: calc(var(--expandedSize) / -2);
-		right: calc(var(--expandedSize) / -2);
+		right: calc(var(--expandedSize) / -2 + 12px); /* Account for 12px scrollbar width */
 	}
 
 	.nav-circle.top-left:hover {

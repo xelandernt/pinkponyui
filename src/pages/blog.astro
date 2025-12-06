@@ -41,7 +41,7 @@ const renderedPosts = await Promise.all(
 				
 				blogEntries.forEach((entry, index) => {
 					const fromLeft = index % 2 === 0;
-					const delay = index * 0.2;
+					const delay = index * 0.15;
 					
 					gsap.fromTo(entry,
 						{
@@ -51,7 +51,7 @@ const renderedPosts = await Promise.all(
 						{
 							x: '0%',
 							opacity: 1,
-							duration: 0.8,
+							duration: 0.5,
 							delay: delay,
 							ease: 'power2.out'
 						}
